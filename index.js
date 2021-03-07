@@ -116,7 +116,7 @@ bot.on('debug', (info) => {
 
 
 async function start() {
-    const whereAmI = __dirname + "\\";
+    const whereAmI = __dirname + "/";
     if (whereAmI !== require("./storage/config.json").location) {
         fichiers = fs.readFileSync(whereAmI + "storage/config.json");
         const config = JSON.parse(fichiers);
