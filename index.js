@@ -118,11 +118,11 @@ bot.on('debug', (info) => {
 async function start() {
     const whereAmI = __dirname + "\\";
     if (whereAmI !== require("./storage/config.json").location) {
-        fichiers = fs.readFileSync(whereAmI + "/storage/config.json");
+        fichiers = fs.readFileSync(whereAmI + "storage/config.json");
         const config = JSON.parse(fichiers);
         config.location = whereAmI;
         let donnees = JSON.stringify(config);
-        fs.writeFileSync(whereAmI + "/storage/config.json", donnees);
+        fs.writeFileSync(whereAmI + "storage/config.json", donnees);
         bot.destroy();
         console.log("The bot is ready you can restart it")
     } else {
