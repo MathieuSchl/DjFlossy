@@ -25,7 +25,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 volume: songData.volume
             };
             const stream = ytdl(songData.tagName, {
-                quality: 'highestaudio'
+                quality: 'lowestaudio'
             });
 
             const dispatcher = connection.play(stream, streamOptions);
