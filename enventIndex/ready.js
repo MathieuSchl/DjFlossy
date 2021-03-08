@@ -13,7 +13,7 @@ module.exports.run = async (bot) => {
         bot.basicFunctions.get("activity").run(bot);
 
         bot.enventIndex.get("cronTab").run(bot);
-        bot.enventIndex.get("catchMessageInSpecialChannels").run(bot);
+        await bot.enventIndex.get("catchMessageInSpecialChannels").run(bot);
 
         bot.specialTextChannel.git.get("pull").ready(bot);
 
