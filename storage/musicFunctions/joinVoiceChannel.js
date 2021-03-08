@@ -9,7 +9,11 @@ module.exports.run = async (bot, channelId) => {
     }
     voiceChannel.join()
         .then(async (connection) => {
-            if(Array.from(voiceChannel.members).length!==1) bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
+            if(Array.from(voiceChannel.members).length>1) bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
+            else{
+                if (connection.dispatcher) connection.dispatcher.destroy();
+                bot.musicFunctions.get("resetPlaylist").run(bot, voiceChannel.guild.id, ()=>{});
+            }
         }).catch((err) => {
             console.log("Error in join for music");
             console.log(err);
