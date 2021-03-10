@@ -75,6 +75,26 @@ bot.on('guildMemberRemove', (member) => {
     }
 })
 
+bot.on('guildCreate', (guild) => {
+    try {
+        bot.enventIndex.get("botJoinAGuild").run(bot, guild);
+    } catch (e) {
+        console.log("Error in the guildCreate event\n---------\n");
+        console.log(e);
+        console.log("\n\n")
+    }
+})
+
+bot.on('guildDelete', (guild) => {
+    try {
+        bot.enventIndex.get("botLeftAGuild").run(bot, guild);
+    } catch (e) {
+        console.log("Error in the guildDelete event\n---------\n");
+        console.log(e);
+        console.log("\n\n")
+    }
+})
+
 bot.on('invalidated', () => {
     try {
         console.log("invalidated event");

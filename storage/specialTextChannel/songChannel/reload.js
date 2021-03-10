@@ -13,7 +13,7 @@ async function realoadChannel(bot, channel) {
         if (error) throw error;
 
         let query = 'SELECT name,emoji FROM ?? WHERE `enable` = ?';
-        const playListsBonus = JSON.parse(results[0].data).playListsBonus;
+        const playListsBonus = JSON.parse(results[0].data).playListsBonus ? JSON.parse(results[0].data).playListsBonus : [];
         for (let index = 0; index < playListsBonus.length; index++) {
             const element = playListsBonus[index];
             query = query + " OR `id`='" + element + "'";
@@ -101,6 +101,10 @@ async function realoadChannel(bot, channel) {
 
 module.exports.run = async (bot, message, dataSpecialChannel) => {
     realoadChannel(bot, message.channel);
+};
+
+module.exports.reload = async (bot, channel) => {
+    realoadChannel(bot, channel);
 };
 
 module.exports.help = {
