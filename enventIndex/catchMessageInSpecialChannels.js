@@ -1,9 +1,3 @@
-const config = require("../storage/config.json");
-const fs = require("fs");
-const pathSpecialMessages = config.location + "/storage/data/specialMessageList/";
-const pathSpecialGuilds = config.location + "/storage/data/specialGuild/";
-const pathSpecialVoiceChannels = config.location + "/storage/data/specialVoiceChannelList/";
-
 module.exports.run = async (bot) => {
     const allGuilds = bot.guilds.cache.array();
 
@@ -24,10 +18,10 @@ module.exports.run = async (bot) => {
         for (let index = 0; index < results.length; index++) {
             const element = results[index];
 
-            try{
+            try {
                 await bot.channels.fetch(element.id);
-            }catch{
-                bot.basicFunctions.get("dbDataSpecialTextChannel").delete(bot, element.id, (error, results, fields)=>{});
+            } catch {
+                bot.basicFunctions.get("dbDataSpecialTextChannel").delete(bot, element.id, (error, results, fields) => {});
             }
         }
         return;
@@ -47,7 +41,7 @@ module.exports.run = async (bot) => {
                     console.log(e);
                 });
             } catch {
-                bot.basicFunctions.get("dbDataSpecialMessage").delete(bot, dataSpecialMessage.id, (error, results, fields)=>{});
+                bot.basicFunctions.get("dbDataSpecialMessage").delete(bot, dataSpecialMessage.id, (error, results, fields) => {});
             }
         }
         return;
@@ -64,14 +58,14 @@ module.exports.run = async (bot) => {
             try {
                 await bot.guilds.fetch(results[i].id);
             } catch (e) {
-                bot.basicFunctions.get("dbDataSpecialGuild").delete(bot, results[i].id, (error, results, fields)=>{});
+                bot.basicFunctions.get("dbDataSpecialGuild").delete(bot, results[i].id, (error, results, fields) => {});
             }
         }
         return;
     });
 
 
-    
+
     await bot.basicFunctions.get("wait").run(3000);
 
     bot.dataBase.get("connection").exec('SELECT * FROM ??', [dbPrefix + "specialVoiceChannel"], async (error, results, fields) => {
@@ -83,7 +77,7 @@ module.exports.run = async (bot) => {
             try {
                 await bot.channels.fetch(dataSpecialVoiceChannel.id);
             } catch {
-                bot.basicFunctions.get("dbDataSpecialVoiceChannel").delete(bot, dataSpecialVoiceChannel.id, (error, results, fields)=>{});
+                bot.basicFunctions.get("dbDataSpecialVoiceChannel").delete(bot, dataSpecialVoiceChannel.id, (error, results, fields) => {});
             }
         }
         return;
