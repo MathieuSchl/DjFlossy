@@ -1,4 +1,4 @@
-async function init(bot, guild) {
+async function init(bot, guild, callback) {
     guild.channels.create(bot.user.username, {
         "type": "category"
     }).then(async (cat) => {
@@ -15,13 +15,15 @@ async function init(bot, guild) {
                     if (error) throw error;
 
                     const data = {
-                        "musicChannel": tc.id,
+                        "musicChannel": vc.id,
+                        "pannel": tc.id,
                         "playListsBonus": []
-                    };
+                    }
                     bot.dataBase.get("connection").exec('UPDATE ?? SET `data` = ? WHERE `id` = ? ;', [dbPrefix + "specialGuild", JSON.stringify(data), guild.id], async (error, results, fields) => {
                         if (error) throw error;
 
-                        await bot.basicFunctions.get("wait").run(250);
+                        if (callback) callback(vc.id, tc.id);
+                        await bot.basicFunctions.get("wait").run(1000);
                         await bot.specialTextChannel["songChannel"].get("reload").reload(bot, tc);
                         await bot.basicFunctions.get("wait").run(1000);
                         bot.musicFunctions.get("createPlaylist").run(bot, guild.id, () => {
@@ -29,14 +31,18 @@ async function init(bot, guild) {
                         });
                     });
                 });
-            })
-        })
-    })
-}
+            });
+        });
+    });
+};
 
 
 module.exports.run = async (bot, message, dataSpecialChannel) => {
-    init(bot, message.guild);
+    init(bot, message.guild, null);
+};
+
+module.exports.newGuild = async (bot, guild, callback) => {
+    init(bot, guild, callback);
 };
 
 

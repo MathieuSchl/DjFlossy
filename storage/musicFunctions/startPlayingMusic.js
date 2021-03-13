@@ -19,7 +19,6 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 return;
             }
 
-            //console.log(await ytdl.getInfo(songData.tagName));
 
             const streamOptions = {
                 volume: songData.volume
