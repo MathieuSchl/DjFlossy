@@ -15,36 +15,37 @@ function shuffle(a) {
 async function getQuerryForSelectSong(bot, idGuild, callback) {
     //callback(error, results, fields);
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec('SELECT id FROM ?? WHERE `type` = "songChannel"', [dbPrefix + "specialTextChannel"], async (error, results, fields) => {
+    bot.basicFunctions.get("dbDataSpecialGuild").select(bot, idGuild, async (error, results, fields) => {
         if (error) throw error;
 
         const listPlaylistId = [];
-        for (let index = 0; index < results.length; index++) {
-            const channel = await bot.channels.fetch(results[0].id)
-            if (channel.guild.id === idGuild) {
-                await channel.messages.fetch().then((messages) => {
-                    messages.forEach(msg => {
-                        if (msg.embeds[0] != null) {
-                            if (titleList.includes(msg.embeds[0].title)) {
-                                const reactions = Array.from(msg.reactions.cache);
-                                reactions.forEach(async (reaction) => {
-                                    if (reaction[1].count > 1) {
-                                        const emojiList = await bot.basicFunctions.get("convertEmojiToString").run([reaction[0]]);
-                                        bot.dataBase.get("connection").exec('SELECT id FROM ?? WHERE emoji = ?', ["musicTag", emojiList[0]], async (error, results, fields) => {
-                                            if (error) {
-                                                console.log(error);
-                                            } else {
-                                                listPlaylistId.push(results[0].id);
-                                            }
-                                        });
-                                    }
-                                })
-                            }
+        const guildData = results[0];
+
+        const channel = await bot.channels.fetch(guildData.data.pannel);
+        if (channel.guild.id === idGuild) {
+            await channel.messages.fetch().then((messages) => {
+                messages.forEach(msg => {
+                    if (msg.embeds[0] != null) {
+                        if (titleList.includes(msg.embeds[0].title)) {
+                            const reactions = Array.from(msg.reactions.cache);
+                            reactions.forEach(async (reaction) => {
+                                if (reaction[1].count > 1) {
+                                    const emojiList = await bot.basicFunctions.get("convertEmojiToString").run([reaction[0]]);
+                                    bot.dataBase.get("connection").exec('SELECT id FROM ?? WHERE emoji = ?', ["musicTag", emojiList[0]], async (error, results, fields) => {
+                                        if (error) {
+                                            console.log(error);
+                                        } else {
+                                            listPlaylistId.push(results[0].id);
+                                        }
+                                    });
+                                }
+                            })
                         }
-                    });
-                })
-            }
+                    }
+                });
+            })
         }
+
         await bot.basicFunctions.get("wait").run(1000);
         let query = "SELECT idMusic FROM ??"
         if (listPlaylistId.length !== 0) {
