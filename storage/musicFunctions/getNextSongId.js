@@ -15,7 +15,7 @@ module.exports.run = async (bot, idGuild, callback) => {
         data.splice(0, 1);
         data = JSON.stringify(data);
 
-        bot.dataBase.get("connection").exec('UPDATE ?? SET `actualSongId` = ? , `songsList` = ? WHERE `id` = ?;', [dbPrefix + "specialGuild", actualSondId, data, idGuild], (error, results, fields) => {
+        bot.dataBase.get("connection").exec('UPDATE ?? SET `startingDate` = ? , `actualSongId` = ? , `songsList` = ? WHERE `id` = ?;', [dbPrefix + "specialGuild", new Date().toISOString(), actualSondId, data, idGuild], (error, results, fields) => {
             if (error) throw error;
 
             callback(actualSondId);
