@@ -32,9 +32,21 @@ module.exports.run = async (bot) => {
             for (let index = 0; index < results.length; index++) {
                 const element = results[index];
 
+
+                const voiceChannel = await bot.channels.fetch(element.data.musicChannel);
+                if (voiceChannel.type !== "voice") {
+                    const guild = voiceChannel.guild;
+                    const owner = await guild.members.fetch(guild.ownerID);
+                    owner.send(`I can't join the channel \`${voiceChannel.name}\` in the guild\`${guild}\`\n` +
+                        `The channel is not a \`voice channel\``);
+                    return;
+                };
+                voiceChannel.join();
+                /*
                 bot.musicFunctions.get("createPlaylist").run(bot, element.id, () => {
                     bot.musicFunctions.get("joinVoiceChannel").run(bot, element.data.musicChannel);
                 });
+                */
                 await bot.basicFunctions.get("wait").run(500);
             }
         });
