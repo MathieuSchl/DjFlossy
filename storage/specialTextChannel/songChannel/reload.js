@@ -70,8 +70,8 @@ async function realoadChannel(bot, channel) {
                 }, async (error, results, fields) => {
                     if (error) throw error;
 
-                    emojiList = ["🔽", "⏭️"];
-                    typeList = ["onMe","next"];
+                    emojiList = ["🔽", "⏭️","❓"];
+                    typeList = ["onMe","next","np"];
                     var commandsEmbed = new Discord.MessageEmbed();
                     commandsEmbed.setColor("#001EFF");
                     commandsEmbed.setTitle('Liste des commandes')
