@@ -18,7 +18,7 @@ async function getVoiceChannelData(bot, oldVoiceChannelId, newVoiceChannelId, ca
 
 module.exports.run = async (bot, oldState, newState) => {
     getVoiceChannelData(bot, oldState.channelID, newState.channelID, (oldDatavoiceChannel, newDatavoiceChannel) => {
-        try{
+        try {
             if (oldState.member.user.id === bot.user.id && oldState.channel && (oldState.channel.id !== newState.channel.id)) {
                 oldState.channel.leave();
                 newState.channel.join().then((connection) => {
@@ -27,7 +27,7 @@ module.exports.run = async (bot, oldState, newState) => {
                     }
                 });
             }
-        }catch{}
+        } catch {}
         try {
             const botChannelId = oldState.guild.me.voice.channel.id;
             if (botChannelId === (oldState.channel ? oldState.channel.id : null) || botChannelId === (newState.channel ? newState.channel.id : null)) {
@@ -43,11 +43,13 @@ module.exports.run = async (bot, oldState, newState) => {
                     }
                 } else {
                     if (oldCount === 1 || newCount === 2) {
-                        bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
-                            bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
-                                if(oldState.guild.me.voice.channel) bot.musicFunctions.get("joinVoiceChannel").run(bot, oldState.guild.me.voice.channel.id);
+                        if (!((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute))) {
+                            bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
+                                bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
+                                    if (oldState.guild.me.voice.channel) bot.musicFunctions.get("joinVoiceChannel").run(bot, oldState.guild.me.voice.channel.id);
+                                });
                             });
-                        });
+                        }
                     }
                 }
             }
