@@ -16,8 +16,17 @@ async function getVoiceChannelData(bot, oldVoiceChannelId, newVoiceChannelId, ca
     return;
 }
 
+async function checkDeafAndMute(oldState, newState) {
+    if (oldState.member.user.id === oldState.guild.client.user.id) {
+        if ((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute)) return false;
+        return true;
+    }
+    if (!((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute))) return true;
+    return false;
+}
+
 module.exports.run = async (bot, oldState, newState) => {
-    getVoiceChannelData(bot, oldState.channelID, newState.channelID, (oldDatavoiceChannel, newDatavoiceChannel) => {
+    getVoiceChannelData(bot, oldState.channelID, newState.channelID, async (oldDatavoiceChannel, newDatavoiceChannel) => {
         try {
             if (oldState.member.user.id === bot.user.id && oldState.channel && (oldState.channel.id !== newState.channel.id)) {
                 oldState.channel.leave();
@@ -33,7 +42,7 @@ module.exports.run = async (bot, oldState, newState) => {
             if (botChannelId === (oldState.channel ? oldState.channel.id : null) || botChannelId === (newState.channel ? newState.channel.id : null)) {
                 const oldCount = oldState.channel ? Array.from(oldState.channel.members).length : 0;
                 const newCount = newState.channel ? Array.from(newState.channel.members).length : 0;
-                if (oldState.member.user.id === bot.user.id && oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) {
+                if ((oldState.member.user.id === bot.user.id) && oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) {
                     if (newCount > 1) {
                         bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
                             bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
@@ -43,7 +52,7 @@ module.exports.run = async (bot, oldState, newState) => {
                     }
                 } else {
                     if (oldCount === 1 || newCount === 2) {
-                        if (!((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute))) {
+                        if (await checkDeafAndMute(oldState, newState)) {
                             bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
                                 bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
                                     if (oldState.guild.me.voice.channel) bot.musicFunctions.get("joinVoiceChannel").run(bot, oldState.guild.me.voice.channel.id);
