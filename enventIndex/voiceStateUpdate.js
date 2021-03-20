@@ -18,6 +18,7 @@ async function getVoiceChannelData(bot, oldVoiceChannelId, newVoiceChannelId, ca
 
 async function checkDeafAndMute(oldState, newState) {
     if (oldState.member.user.id === oldState.guild.client.user.id) {
+        if ((oldState.selfDeaf == null) || (oldState.selfMute == null) || (oldState.serverDeaf == null) || (oldState.serverMute == null)) return true;
         if ((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute)) return false;
         return true;
     }
