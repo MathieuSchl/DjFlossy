@@ -15,9 +15,27 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
     bot.user.setActivity("Arrêt en cours", {
         type: "WATCHING"
     });
+
+    const guildList = Array.from(bot.guilds.cache);
+    guildList.forEach(element => {
+        element = element[1];
+        if (element.me.voice.channel) {
+            element.me.voice.channel.join().then((connection) => {
+                if (connection.dispatcher) {
+                    connection.dispatcher.destroy();
+                }
+                connection.disconnect();
+                element.me.voice.channel.leave();
+            });
+        }
+    });
+
     await bot.basicFunctions.get("wait").run(2500);
     bot.destroy();
     bot.enventIndex.get("cronTab").stop(bot);
+
+    await bot.basicFunctions.get("wait").run(5000);
+    process.exit(0);
 };
 
 

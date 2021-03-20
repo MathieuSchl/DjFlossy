@@ -15,11 +15,9 @@ module.exports.run = async (bot) => {
         bot.enventIndex.get("cronTab").run(bot);
         await bot.enventIndex.get("catchMessageInSpecialChannels").run(bot);
 
-        bot.specialTextChannel.git.get("pull").ready(bot);
-
         bot.specialTextChannel["console"].get("reloadConsole").run(bot);
 
-        bot.basicFunctions.get("DbConfiguration").verifyTable(bot);
+        await bot.basicFunctions.get("DbConfiguration").verifyTable(bot);
 
         bot.musicFunctions.get("startBotMusicInGuilds").run(bot);
     } catch (e) {
