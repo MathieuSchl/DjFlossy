@@ -41,7 +41,11 @@ module.exports.run = async (bot) => {
                         `The channel is not a \`voice channel\``);
                     return;
                 };
-                voiceChannel.join();
+                voiceChannel.join().catch((err) => {
+                    console.log("Error in startBotMusicInGuilds");
+                    //console.log(err);
+                    console.log(err.code === "VOICE_CONNECTION_TIMEOUT");
+                });
                 /*
                 bot.musicFunctions.get("createPlaylist").run(bot, element.id, () => {
                     bot.musicFunctions.get("joinVoiceChannel").run(bot, element.data.musicChannel);
