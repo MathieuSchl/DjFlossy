@@ -1,5 +1,5 @@
 module.exports.run = async (bot, callback) => {
-    bot.dataBase.get("connection").getDb((db) => {
+    require("../../../dataBase/connection.js").getDb((db) => {
         bot.db = db;
         callback();
     });

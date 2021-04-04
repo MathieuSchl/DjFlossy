@@ -10,18 +10,16 @@ module.exports.run = async (bot) => {
     console.log(" ");
 
     try {
-        bot.enventIndex.get("createDBConnection").run(bot, async () => {
-            bot.basicFunctions.get("activity").run(bot);
+        bot.basicFunctions.get("activity").run(bot);
 
-            bot.enventIndex.get("cronTab").run(bot);
-            await bot.enventIndex.get("catchMessageInSpecialChannels").run(bot);
+        bot.enventIndex.get("cronTab").run(bot);
+        await bot.enventIndex.get("catchMessageInSpecialChannels").run(bot);
 
-            bot.specialTextChannel["console"].get("reloadConsole").run(bot);
+        bot.specialTextChannel["console"].get("reloadConsole").run(bot);
 
-            await bot.basicFunctions.get("DbConfiguration").verifyTable(bot);
+        await bot.basicFunctions.get("DbConfiguration").verifyTable(bot);
 
-            bot.musicFunctions.get("startBotMusicInGuilds").run(bot);
-        });
+        bot.musicFunctions.get("startBotMusicInGuilds").run(bot);
     } catch (e) {
         const disk = config.location.split("")[0];
         if (["C", "D", "E"].includes(disk)) {

@@ -154,9 +154,11 @@ async function start() {
 
         try {
             setTimeout(() => {
-                bot.login(require("./storage/config.json").token).catch((error) => {
-                    if (error.name === "FetchError") bot.specialTextChannel.dataCenter.get("raspReboot").run(bot, null, null);
-                    else console.log(error);
+                require("./enventIndex/createDBConnection").run(bot, async () => {
+                    bot.login(require("./storage/config.json").token).catch((error) => {
+                        if (error.name === "FetchError") bot.specialTextChannel.dataCenter.get("raspReboot").run(bot, null, null);
+                        else console.log(error);
+                    });
                 })
             }, 2000);
         } catch (e) {}
