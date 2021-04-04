@@ -32,6 +32,7 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
 
     await bot.basicFunctions.get("wait").run(2500);
     bot.destroy();
+    bot.db.end();
     bot.enventIndex.get("cronTab").stop(bot);
 
     await bot.basicFunctions.get("wait").run(5000);

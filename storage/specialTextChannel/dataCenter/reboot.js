@@ -14,6 +14,7 @@ module.exports.run = async (bot, message, dataSpecialChannel)=>{
         await wait(5500);
     }
     bot.destroy();
+    bot.db.end();
     bot.enventIndex.get("cronTab").stop(bot);
     await wait(5000);
     console.log("+------+\n|Reboot|\n+------+\n");

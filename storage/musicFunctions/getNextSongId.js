@@ -1,6 +1,6 @@
 module.exports.run = async (bot, idGuild, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec('SELECT `songsList` FROM ?? WHERE `id` = ?', [dbPrefix + "specialGuild", idGuild], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,'SELECT `songsList` FROM ?? WHERE `id` = ?', [dbPrefix + "specialGuild", idGuild], (error, results, fields) => {
         if (error) throw error;
 
         let data = results[0];
@@ -15,7 +15,7 @@ module.exports.run = async (bot, idGuild, callback) => {
         data.splice(0, 1);
         data = JSON.stringify(data);
 
-        bot.dataBase.get("connection").exec('UPDATE ?? SET `startingDate` = ? , `actualSongId` = ? , `songsList` = ? WHERE `id` = ?;', [dbPrefix + "specialGuild", new Date().toISOString(), actualSondId, data, idGuild], (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db,'UPDATE ?? SET `startingDate` = ? , `actualSongId` = ? , `songsList` = ? WHERE `id` = ?;', [dbPrefix + "specialGuild", new Date().toISOString(), actualSondId, data, idGuild], (error, results, fields) => {
             if (error) throw error;
 
             callback(actualSondId);

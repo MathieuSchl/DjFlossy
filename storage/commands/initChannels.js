@@ -11,7 +11,7 @@ async function init(bot, guild, callback) {
                 "parent": cat
             }).then(async (vc) => {
                 const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-                bot.dataBase.get("connection").exec('INSERT INTO ?? (`id`, `type`, `data`) VALUES (?, ?, ?)', [dbPrefix + "specialTextChannel", tc.id, "songChannel", "{}"], (error, results, fields) => {
+                bot.dataBase.get("connection").exec(bot.db,'INSERT INTO ?? (`id`, `type`, `data`) VALUES (?, ?, ?)', [dbPrefix + "specialTextChannel", tc.id, "songChannel", "{}"], (error, results, fields) => {
                     if (error) throw error;
 
                     const data = {
@@ -19,7 +19,7 @@ async function init(bot, guild, callback) {
                         "pannel": tc.id,
                         "playListsBonus": []
                     }
-                    bot.dataBase.get("connection").exec('UPDATE ?? SET `data` = ? WHERE `id` = ? ;', [dbPrefix + "specialGuild", JSON.stringify(data), guild.id], async (error, results, fields) => {
+                    bot.dataBase.get("connection").exec(bot.db,'UPDATE ?? SET `data` = ? WHERE `id` = ? ;', [dbPrefix + "specialGuild", JSON.stringify(data), guild.id], async (error, results, fields) => {
                         if (error) throw error;
 
                         if (callback) callback(vc.id, tc.id);

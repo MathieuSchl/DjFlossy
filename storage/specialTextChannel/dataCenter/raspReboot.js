@@ -8,6 +8,7 @@ module.exports.run = async (bot, message, dataSpecialChannel)=>{
         await bot.basicFunctions.get("wait").run(5500);
     }
     bot.destroy();
+    bot.db.end();
     bot.enventIndex.get("cronTab").stop(bot);
     require('child_process').exec('sudo /sbin/shutdown -r now', function (msg) { console.log(msg) });
 };

@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 
 module.exports.run = async (bot, message, dataSpecialChannel) => {
-    bot.dataBase.get("connection").exec("SELECT `name` FROM ??", ["musicTag"], async (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,"SELECT `name` FROM ??", ["musicTag"], async (error, results, fields) => {
         if (error) throw error;
 
         const playList = [];
@@ -21,25 +21,25 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
                 return;
             }
         }
-        bot.dataBase.get("connection").exec("INSERT INTO ?? (`id`, `tagName`, `volume`) VALUES (NULL, ?, '1')", ["musicsList", dataSpecialChannel.data.musicTag], async (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db,"INSERT INTO ?? (`id`, `tagName`, `volume`) VALUES (NULL, ?, '1')", ["musicsList", dataSpecialChannel.data.musicTag], async (error, results, fields) => {
             if (error) throw error;
 
-            bot.dataBase.get("connection").exec("SELECT `id` FROM ?? WHERE `tagName` = ?", ["musicsList", dataSpecialChannel.data.musicTag], async (error, results, fields) => {
+            bot.dataBase.get("connection").exec(bot.db,"SELECT `id` FROM ?? WHERE `tagName` = ?", ["musicsList", dataSpecialChannel.data.musicTag], async (error, results, fields) => {
                 if (error) throw error;
 
                 const id = results[0].id;
                 for (let index = 0; index < args.length; index++) {
-                    bot.dataBase.get("connection").exec("SELECT id FROM ?? WHERE `name` = ?", ["musicTag", args[index]], async (error, results, fields) => {
+                    bot.dataBase.get("connection").exec(bot.db,"SELECT id FROM ?? WHERE `name` = ?", ["musicTag", args[index]], async (error, results, fields) => {
                         if (error) throw error;
 
                         const idTag = results[0].id;
-                        bot.dataBase.get("connection").exec("INSERT INTO ?? (`id`, `idTag`, `idMusic`) VALUES (NULL, ?, ?)", ["musicsCorrelation", idTag, id], async (error, results, fields) => {
+                        bot.dataBase.get("connection").exec(bot.db,"INSERT INTO ?? (`id`, `idTag`, `idMusic`) VALUES (NULL, ?, ?)", ["musicsCorrelation", idTag, id], async (error, results, fields) => {
                             if (error) throw error;
 
                             const data = dataSpecialChannel.data;
                             data.status = "URL";
                             const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-                            bot.dataBase.get("connection").exec("UPDATE ?? SET `data` = ? WHERE `id` = ?", [dbPrefix + "specialTextChannel", JSON.stringify(data), dataSpecialChannel.id], async (error, results, fields) => {
+                            bot.dataBase.get("connection").exec(bot.db,"UPDATE ?? SET `data` = ? WHERE `id` = ?", [dbPrefix + "specialTextChannel", JSON.stringify(data), dataSpecialChannel.id], async (error, results, fields) => {
                                 if (error) throw error;
 
                                 message.channel.messages.fetch().then(messages => {

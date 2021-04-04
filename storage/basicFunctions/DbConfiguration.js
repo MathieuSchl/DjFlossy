@@ -18,7 +18,7 @@ module.exports.getDbPrefix = async (bot) => {
 };
 
 function verifyATable(bot, dbPrefix, tableName) {
-    bot.dataBase.get("connection").exec('SELECT * FROM ??', [dbPrefix + tableName], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,'SELECT * FROM ??', [dbPrefix + tableName], (error, results, fields) => {
         if (error) {
             if (error.code === "ER_NO_SUCH_TABLE") {
                 bot.dataBase.get("connection").createTable(dbPrefix, tableName);

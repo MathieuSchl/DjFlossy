@@ -37,6 +37,7 @@ async function pull(bot, GitChannel, terminalChannel) {
         });
         await bot.basicFunctions.get("wait").run(5250);
         bot.destroy();
+        bot.db.end();
         await bot.basicFunctions.get("wait").run(5000);
         require('child_process').exec(`node ${config.location}/index.js`, function (msg) {
         });

@@ -1,6 +1,6 @@
 async function resetAllPlaylist(bot, callback) {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec('UPDATE ?? SET `actualSongId` = NULL , `songsList` = \'[]\'', [dbPrefix + "specialGuild"], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,'UPDATE ?? SET `actualSongId` = NULL , `songsList` = \'[]\'', [dbPrefix + "specialGuild"], (error, results, fields) => {
 
         callback(error, results, fields);
         return;
@@ -9,7 +9,7 @@ async function resetAllPlaylist(bot, callback) {
 
 async function getAllGuilds(bot, callback) {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec('SELECT * FROM ??', [dbPrefix + "specialGuild"], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,'SELECT * FROM ??', [dbPrefix + "specialGuild"], (error, results, fields) => {
         for (let index = 0; index < results.length; index++) {
             results[index].actionAdd = JSON.parse(results[index].actionAdd);
             results[index].actionRemove = JSON.parse(results[index].actionRemove);
@@ -59,7 +59,7 @@ module.exports.run = async (bot) => {
 
 module.exports.one = async (bot, guildId, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec('UPDATE ?? SET `actualSongId` = NULL , `songsList` = \'[]\' WHERE `id` = ?', [dbPrefix + "specialGuild", guildId], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,'UPDATE ?? SET `actualSongId` = NULL , `songsList` = \'[]\' WHERE `id` = ?', [dbPrefix + "specialGuild", guildId], (error, results, fields) => {
         callback(error, results, fields);
         return;
     });

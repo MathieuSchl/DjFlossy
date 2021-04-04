@@ -31,7 +31,7 @@ async function getQuerryForSelectSong(bot, idGuild, callback) {
                             reactions.forEach(async (reaction) => {
                                 if (reaction[1].count > 1) {
                                     const emojiList = await bot.basicFunctions.get("convertEmojiToString").run([reaction[0]]);
-                                    bot.dataBase.get("connection").exec('SELECT id FROM ?? WHERE emoji = ?', ["musicTag", emojiList[0]], async (error, results, fields) => {
+                                    bot.dataBase.get("connection").exec(bot.db, 'SELECT id FROM ?? WHERE emoji = ?', ["musicTag", emojiList[0]], async (error, results, fields) => {
                                         if (error) {
                                             console.log(error);
                                         } else {
@@ -58,7 +58,7 @@ async function getQuerryForSelectSong(bot, idGuild, callback) {
         } else {
             query = query + " WHERE `idTag` = 1";
         }
-        bot.dataBase.get("connection").exec(query, ["musicsCorrelation"], async (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db, query, ["musicsCorrelation"], async (error, results, fields) => {
             if (error) throw error;
 
             query = "SELECT id FROM ??"
@@ -77,7 +77,7 @@ async function getQuerryForSelectSong(bot, idGuild, callback) {
 
 async function getMusicsForPlaylist(bot, idGuild, callback) {
     await getQuerryForSelectSong(bot, idGuild, (query) => {
-        bot.dataBase.get("connection").exec(query, ["musicsList"], async (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db, query, ["musicsList"], async (error, results, fields) => {
             callback(error, results, fields);
         });
     });
@@ -95,7 +95,7 @@ module.exports.run = async (bot, idGuild, callback) => {
         }
 
         const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-        bot.dataBase.get("connection").exec('SELECT `songsList` FROM ?? WHERE `id` = ?', [dbPrefix + "specialGuild", idGuild], (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db, 'SELECT `songsList` FROM ?? WHERE `id` = ?', [dbPrefix + "specialGuild", idGuild], (error, results, fields) => {
             if (error) throw error;
 
             let data = results[0];
@@ -103,7 +103,7 @@ module.exports.run = async (bot, idGuild, callback) => {
             data = music;
             data = JSON.stringify(data);
 
-            bot.dataBase.get("connection").exec('UPDATE ?? SET `songsList` = ? WHERE `id` = ?;', [dbPrefix + "specialGuild", data, idGuild], (error, results, fields) => {
+            bot.dataBase.get("connection").exec(bot.db, 'UPDATE ?? SET `songsList` = ? WHERE `id` = ?;', [dbPrefix + "specialGuild", data, idGuild], (error, results, fields) => {
                 if (error) throw error;
 
                 callback(error, results, fields);

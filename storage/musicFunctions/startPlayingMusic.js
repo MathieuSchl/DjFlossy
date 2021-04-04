@@ -2,7 +2,7 @@ const ytdl = require("ytdl-core");
 
 
 async function getSong(bot, idSong, callback) {
-    bot.dataBase.get("connection").exec('SELECT * FROM ?? WHERE id = ?', ["musicsList", idSong], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,'SELECT * FROM ?? WHERE id = ?', ["musicsList", idSong], (error, results, fields) => {
         callback(error, results, fields);
         return;
     });

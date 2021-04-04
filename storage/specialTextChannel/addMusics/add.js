@@ -19,7 +19,7 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
         return;
     }
     const info = await ytdl.getInfo(args[0]);
-    bot.dataBase.get("connection").exec("SELECT * FROM ?? WHERE tagName = ?", ["musicsList", info.videoDetails.videoId], async (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, "SELECT * FROM ?? WHERE tagName = ?", ["musicsList", info.videoDetails.videoId], async (error, results, fields) => {
         if (error) throw error;
 
         if (results.length !== 0) {
@@ -34,9 +34,9 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
         data.status = "playList";
         data.musicTag = info.videoDetails.videoId;
         const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-        bot.dataBase.get("connection").exec("UPDATE ?? SET `data` = ? WHERE `id` = ?", [dbPrefix + "specialTextChannel", JSON.stringify(data), dataSpecialChannel.id], async (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `data` = ? WHERE `id` = ?", [dbPrefix + "specialTextChannel", JSON.stringify(data), dataSpecialChannel.id], async (error, results, fields) => {
 
-            bot.dataBase.get("connection").exec("SELECT `name` FROM ??", ["musicTag"], async (error, results, fields) => {
+            bot.dataBase.get("connection").exec(bot.db, "SELECT `name` FROM ??", ["musicTag"], async (error, results, fields) => {
                 if (error) throw error;
 
                 message.channel.messages.fetch().then(messages => {

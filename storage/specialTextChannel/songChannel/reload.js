@@ -9,7 +9,7 @@ function testIfIsEmojis(string) {
 
 async function realoadChannel(bot, channel) {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec('SELECT data FROM ?? WHERE id = ?', [dbPrefix + "specialGuild", channel.guild.id], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, 'SELECT data FROM ?? WHERE id = ?', [dbPrefix + "specialGuild", channel.guild.id], (error, results, fields) => {
         if (error) throw error;
 
         let query = 'SELECT name,emoji FROM ?? WHERE `enable` = ?';
@@ -19,7 +19,7 @@ async function realoadChannel(bot, channel) {
             query = query + " OR `id`='" + element + "'";
         }
 
-        bot.dataBase.get("connection").exec(query, ["musicTag", 1], (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db, query, ["musicTag", 1], (error, results, fields) => {
             if (error) throw error;
 
             const playList = [];
@@ -37,7 +37,7 @@ async function realoadChannel(bot, channel) {
             channel.messages.fetch().then(messages => {
                 messages.array().forEach(msg => {
                     if (msg.deletable) msg.delete();
-                    bot.dataBase.get("connection").exec('DELETE FROM ?? WHERE id = ?', [dbPrefix + "specialMessage", msg.id], (error, results, fields) => {
+                    bot.dataBase.get("connection").exec(bot.db, 'DELETE FROM ?? WHERE id = ?', [dbPrefix + "specialMessage", msg.id], (error, results, fields) => {
                         if (error) throw error;
                     });
                 });
@@ -70,8 +70,8 @@ async function realoadChannel(bot, channel) {
                 }, async (error, results, fields) => {
                     if (error) throw error;
 
-                    emojiList = ["🔽", "⏭️","❓"];
-                    typeList = ["onMe","next","np"];
+                    emojiList = ["🔽", "⏭️", "❓"];
+                    typeList = ["onMe", "next", "np"];
                     var commandsEmbed = new Discord.MessageEmbed();
                     commandsEmbed.setColor("#001EFF");
                     commandsEmbed.setTitle('Liste des commandes')

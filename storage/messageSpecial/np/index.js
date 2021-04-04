@@ -88,7 +88,7 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
     reaction.users.remove(user.id);
 
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec("SELECT * FROM ?? WHERE id = ?", [dbPrefix + "specialGuild", reaction.message.guild.id], async (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db,"SELECT * FROM ?? WHERE id = ?", [dbPrefix + "specialGuild", reaction.message.guild.id], async (error, results, fields) => {
         if (error) throw error;
 
         if (results[0].actualSongId === null) {
@@ -96,7 +96,7 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
             return;
         }
 
-        bot.dataBase.get("connection").exec("SELECT tagName, ? AS 'startingDate' FROM ?? WHERE id = ?", [results[0].startingDate, "musicsList", results[0].actualSongId], async (error, results, fields) => {
+        bot.dataBase.get("connection").exec(bot.db,"SELECT tagName, ? AS 'startingDate' FROM ?? WHERE id = ?", [results[0].startingDate, "musicsList", results[0].actualSongId], async (error, results, fields) => {
             if (error) throw error;
 
             sendMusicsInfo(bot, reaction.message.channel, results[0]);
