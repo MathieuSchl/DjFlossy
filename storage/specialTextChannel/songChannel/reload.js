@@ -75,7 +75,10 @@ async function realoadChannel(bot, channel) {
                     var commandsEmbed = new Discord.MessageEmbed();
                     commandsEmbed.setColor("#001EFF");
                     commandsEmbed.setTitle('Liste des commandes')
-                    commandsEmbed.setDescription('Work in progress')
+                    commandsEmbed.setDescription("Cliquez sur les réactions pour faire l'action correspondante:\n\n" +
+                        "🔽 => Permets de déplacer le bot dans le salon vocal actuel\n" +
+                        "⏭️ => Permets de passer à la musique suivante\n"+
+                        "❓  => Donne les informations de la musique en cour")
                     channel.send(commandsEmbed).then(async (msg) => {
                         for (let index = 0; index < emojiList.length; index++) {
                             msg.react(emojiList[index]);
