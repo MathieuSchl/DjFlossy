@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const config = require("../config.json");
 const admin = ["210392675478667269"]
 
