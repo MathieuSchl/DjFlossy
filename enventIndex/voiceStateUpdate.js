@@ -39,11 +39,12 @@ module.exports.run = async (bot, oldState, newState) => {
             }
         } catch {}
         try {
+            const oldCount = oldState.channel ? Array.from(oldState.channel.members).length : 0;
+            const newCount = newState.channel ? Array.from(newState.channel.members).length : 0;
+            bot.enventIndex.get("userVoiceUpdate").run(bot, oldState, newState, oldDatavoiceChannel, newDatavoiceChannel);
+
             const botChannelId = oldState.guild.me.voice.channel.id;
             if (botChannelId === (oldState.channel ? oldState.channel.id : null) || botChannelId === (newState.channel ? newState.channel.id : null)) {
-                const oldCount = oldState.channel ? Array.from(oldState.channel.members).length : 0;
-                const newCount = newState.channel ? Array.from(newState.channel.members).length : 0;
-                //Add shield here
                 if ((oldState.member.user.id === bot.user.id) && oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) {
                     if (newCount > 1) {
                         bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
