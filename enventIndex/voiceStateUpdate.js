@@ -18,11 +18,11 @@ async function getVoiceChannelData(bot, oldVoiceChannelId, newVoiceChannelId, ca
 
 async function checkDeafAndMute(oldState, newState) {
     if (oldState.member.user.id === oldState.guild.client.user.id) {
-        if ((oldState.selfDeaf == null) || (oldState.selfMute == null) || (oldState.serverDeaf == null) || (oldState.serverMute == null)) return true;
-        if ((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute)) return false;
+        if ((oldState.selfDeaf == null) || (oldState.selfMute == null) || (oldState.serverDeaf == null) || (oldState.serverMute == null) || (oldState.streaming == null) || (oldState.selfVideo == null)) return true;
+        if ((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute) || (newState.streaming !== oldState.streaming) || (newState.selfVideo !== oldState.selfVideo)) return false;
         return true;
     }
-    if (!((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute))) return true;
+    if (!((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute) || (newState.streaming !== oldState.streaming) || (newState.selfVideo !== oldState.selfVideo))) return true;
     return false;
 }
 
@@ -43,6 +43,7 @@ module.exports.run = async (bot, oldState, newState) => {
             if (botChannelId === (oldState.channel ? oldState.channel.id : null) || botChannelId === (newState.channel ? newState.channel.id : null)) {
                 const oldCount = oldState.channel ? Array.from(oldState.channel.members).length : 0;
                 const newCount = newState.channel ? Array.from(newState.channel.members).length : 0;
+                //Add shield here
                 if ((oldState.member.user.id === bot.user.id) && oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) {
                     if (newCount > 1) {
                         bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
