@@ -2,7 +2,7 @@ const ytdl = require("ytdl-core");
 
 
 async function getSong(bot, idSong, callback) {
-    bot.dataBase.get("connection").exec(bot.db,'SELECT * FROM ?? WHERE id = ?', ["musicsList", idSong], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ?? WHERE id = ?', ["musicsList", idSong], (error, results, fields) => {
         callback(error, results, fields);
         return;
     });
@@ -38,17 +38,26 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 //voiceChannel.leave();
             });
 
+            connection.on("disconnect", () => {
+                dispatcher.destroy();
+                voiceChannel.leave();
+            })
+
             dispatcher.on("error", (err) => {
                 console.log("Error with the dispatcher");
+                console.log(err.code);
+                console.log("\n\n");
                 console.log(err);
                 dispatcher.destroy();
                 voiceChannel.leave();
             });
 
+            /*
             await bot.basicFunctions.get("wait").run(videoData.videoDetails.lengthSeconds * 1100);
             if (!dispatcher["_writableState"].ended) {
                 dispatcher.destroy();
             }
+            */
         });
     });
 };
