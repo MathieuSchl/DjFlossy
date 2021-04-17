@@ -24,7 +24,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 const streamOptions = {
                     volume: songData.volume
                 };
-                //const videoData = await ytdl.getInfo(songData.tagName);
+                const videoData = await ytdl.getInfo(songData.tagName);
                 const stream = ytdl(songData.tagName, {
                     quality: 'lowestaudio',
                     filter: 'audioonly'
@@ -53,13 +53,11 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     voiceChannel.leave();
                 });
 
-                /*
                 await bot.basicFunctions.get("wait").run(videoData.videoDetails.lengthSeconds * 1100);
                 if (!dispatcher["_writableState"].ended) {
                     dispatcher.destroy();
                 }
-                */
-
+                
             } catch {
                 console.log("Error in startPlayingMusic");
                 console.log(e);
