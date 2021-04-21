@@ -39,11 +39,6 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     //voiceChannel.leave();
                 });
 
-                connection.on("disconnect", () => {
-                    dispatcher.destroy();
-                    voiceChannel.leave();
-                })
-
                 dispatcher.on("error", (err) => {
                     console.log("Error with the dispatcher");
                     console.log(err.code);
@@ -53,11 +48,12 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     voiceChannel.leave();
                 });
 
+                //Security to destroy dispatcher
                 await bot.basicFunctions.get("wait").run(videoData.videoDetails.lengthSeconds * 1100);
                 if (!dispatcher["_writableState"].ended) {
                     dispatcher.destroy();
                 }
-                
+
             } catch {
                 console.log("Error in startPlayingMusic");
                 console.log(e);

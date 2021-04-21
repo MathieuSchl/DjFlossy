@@ -9,6 +9,11 @@ module.exports.run = async (bot, channelId) => {
     }
     voiceChannel.join()
         .then(async (connection) => {
+
+            connection.on("disconnect", () => {
+                if (connection.dispatcher) connection.dispatcher.destroy();
+            })
+
             if (Array.from(voiceChannel.members).length > 1) bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
             else {
                 if (connection.dispatcher) connection.dispatcher.destroy();
