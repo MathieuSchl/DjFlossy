@@ -34,21 +34,23 @@ module.exports.run = async (bot) => {
         bot.dataBase.get("connection").exec(bot.db, 'SELECT `playListTag`, `playlist` FROM ??', ["playlistsList"], (error, results, fields) => {
             if (error) throw error;
 
-            results.forEach(async (element) => {
-                const playListTag = element.playListTag;
-                const playlist = JSON.parse(element.playlist);
+            try {
+                results.forEach(async (element) => {
+                    const playListTag = element.playListTag;
+                    const playlist = JSON.parse(element.playlist);
 
-                playlists(playListTag).then(async (playListData) => {
-                    //const theLastXMusics = playListData.videos.length;
-                    const theLastXMusics = 3;
-                    for (let index = 0; index < theLastXMusics; index++) {
-                        const element = playListData.videos[index];
-                        addSong(bot, element.id, playlist);
-                        await bot.basicFunctions.get("wait").run(1000);
-                    }
+                    playlists(playListTag).then(async (playListData) => {
+                        //const theLastXMusics = playListData.videos.length;
+                        const theLastXMusics = 3;
+                        for (let index = 0; index < theLastXMusics; index++) {
+                            const element = playListData.videos[index];
+                            addSong(bot, element.id, playlist);
+                            await bot.basicFunctions.get("wait").run(1000);
+                        }
+                    });
+                    await bot.basicFunctions.get("wait").run(10000);
                 });
-                await bot.basicFunctions.get("wait").run(10000);
-            });
+            } catch {}
         });
         job.stop();
     });
