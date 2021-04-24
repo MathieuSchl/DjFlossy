@@ -31,6 +31,8 @@ module.exports.run = async (bot) => {
     //modify tour cron here
 
     const job = new CronJob('0 30 05 * * *', async function () {
+        job.stop();
+        return;
         bot.dataBase.get("connection").exec(bot.db, 'SELECT `playListTag`, `playlist` FROM ??', ["playlistsList"], (error, results, fields) => {
             if (error) throw error;
 
