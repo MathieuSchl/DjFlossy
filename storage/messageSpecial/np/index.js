@@ -1,6 +1,27 @@
 const ytdl = require("ytdl-core");
 const Discord = require('discord.js');
 const ytch = require('yt-channel-info')
+const acceptedTypes = ["DJ"];
+
+
+async function checkTheTypeOfTheGuild(bot, channel, callback) {
+    const guildId = channel.guild.id;
+    const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
+    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ?? WHERE `id` = ?', [dbPrefix + "specialGuild", guildId], (error, results, fields) => {
+        if (error) throw error;
+
+        const result = results[0];
+        const data = JSON.parse(result.data);
+        const type = data.type;
+        if (acceptedTypes.includes(type)) callback();
+        else {
+            channel.send("C'est fonctionnalité n'est pas disponible pour le momment").then(async (msg) => {
+                await bot.basicFunctions.get("wait").run(10000)
+                if (msg.deletable) msg.delete();
+            })
+        }
+    });
+}
 
 async function testChannelInfo(authorId) {
     try {
@@ -83,23 +104,30 @@ async function sendMusicsInfo(bot, channel, sqlInfos) {
     }
 }
 
-
 module.exports.addReaction = async (bot, reaction, user, messageData, index) => {
     reaction.users.remove(user.id);
 
-    const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec(bot.db,"SELECT * FROM ?? WHERE id = ?", [dbPrefix + "specialGuild", reaction.message.guild.id], async (error, results, fields) => {
-        if (error) throw error;
 
-        if (results[0].actualSongId === null) {
-            sendMusicsInfo(bot, reaction.message.channel, null, null);
-            return;
-        }
-
-        bot.dataBase.get("connection").exec(bot.db,"SELECT tagName, ? AS 'startingDate' FROM ?? WHERE id = ?", [results[0].startingDate, "musicsList", results[0].actualSongId], async (error, results, fields) => {
+    checkTheTypeOfTheGuild(bot, reaction.message.channel, async () => {
+        const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
+        bot.dataBase.get("connection").exec(bot.db, "SELECT * FROM ?? WHERE id = ?", [dbPrefix + "specialGuild", reaction.message.guild.id], async (error, results, fields) => {
             if (error) throw error;
 
-            sendMusicsInfo(bot, reaction.message.channel, results[0]);
+            if (results[0].actualSongId === null) {
+                sendMusicsInfo(bot, reaction.message.channel, null, null);
+                return;
+            }
+
+            bot.dataBase.get("connection").exec(bot.db, "SELECT tagName, ? AS 'startingDate' FROM ?? WHERE id = ?", [results[0].startingDate, "musicsList", results[0].actualSongId], async (error, musicsResults, fields) => {
+                if (error) throw error;
+
+                if (musicsResults[0]) sendMusicsInfo(bot, reaction.message.channel, musicsResults[0]);
+                else sendMusicsInfo(bot, reaction.message.channel, {
+                    "id": -1,
+                    "tagName": results[0].actualSongId,
+                    "volume": 1
+                });
+            });
         });
     });
 }

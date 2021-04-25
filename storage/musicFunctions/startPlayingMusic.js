@@ -1,7 +1,22 @@
 const ytdl = require("ytdl-core");
 
 
+function isString(data) {
+    if (data === parseInt(data, 10))
+        return false;
+    else
+        return true;
+}
+
 async function getSong(bot, idSong, callback) {
+    if (isString(idSong)) {
+        callback(null, [{
+            "id": -1,
+            "tagName": idSong,
+            "volume": 1
+        }], null);
+        return;
+    }
     bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ?? WHERE id = ?', ["musicsList", idSong], (error, results, fields) => {
         callback(error, results, fields);
         return;
@@ -54,7 +69,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     dispatcher.destroy();
                 }
 
-            } catch {
+            } catch(e) {
                 console.log("Error in startPlayingMusic");
                 console.log(e);
                 bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);

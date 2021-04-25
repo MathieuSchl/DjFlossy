@@ -10,7 +10,7 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
         bot.specialTextChannel[system].get(command).run(bot, message, dataSpecialChannel);
     } catch (e) {
         //console.log(e);
-        //console.log("connais pas")
+        bot.specialTextChannel[system].get("customSong").run(bot, message, dataSpecialChannel);
     }
 }
 
