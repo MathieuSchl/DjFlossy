@@ -2,14 +2,15 @@ const acceptedTypes = ["DJ"];
 
 
 async function reloadPlayList(bot, guild) {
-    guild.me.voice.channel.join().then((con) => {
-        if (con.dispatcher) con.dispatcher.destroy();
+    const connection = guild.me.voice.connection;
+    if (connection) {
+        if (connection.dispatcher) con.dispatcher.destroy();
         bot.musicFunctions.get("startBotMusicInGuilds").one(bot, guild.id, (error, results, fields) => {
             bot.musicFunctions.get("createPlaylist").run(bot, guild.id, () => {
                 bot.musicFunctions.get("joinVoiceChannel").run(bot, guild.me.voice.channel.id);
             });
         });
-    })
+    }
     return;
 }
 

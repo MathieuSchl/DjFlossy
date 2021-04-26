@@ -26,13 +26,14 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
     guildList.forEach(element => {
         element = element[1];
         if (element.me.voice.channel) {
-            element.me.voice.channel.join().then((connection) => {
+            const connection = element.me.voice.connection;
+            if (connection) {
                 if (connection.dispatcher) {
                     connection.dispatcher.destroy();
                 }
                 connection.disconnect();
                 element.me.voice.channel.leave();
-            });
+            }
         }
     });
 

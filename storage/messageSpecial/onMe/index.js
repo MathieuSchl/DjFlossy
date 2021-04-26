@@ -35,14 +35,13 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
         const member = await reaction.message.guild.members.fetch(user.id);
         const channel = member.voice.channel;
         if (channel) {
-            const actualChannel = reaction.message.guild.me.voice.channel;
-            if (actualChannel) {
-                reaction.message.guild.me.voice.channel.join().then(async (connection) => {
-                    if (connection.dispatcher) connection.dispatcher.destroy();
-                    connection.disconnect();
+            const voiceState = reaction.message.guild.me.voice;
+            if (voiceState.channel) {
+                const connection = voiceState.connection;
+                if (connection.dispatcher) connection.dispatcher.destroy();
+                connection.disconnect();
 
-                    start(bot, reaction.message.guild.id, channel.id);
-                });
+                start(bot, reaction.message.guild.id, channel.id);
             } else {
                 start(bot, reaction.message.guild.id, channel.id);
             }

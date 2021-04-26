@@ -38,11 +38,12 @@ async function runDj(bot, oldState, newState, oldDatavoiceChannel, newDatavoiceC
     try {
         if (oldState.member.user.id === bot.user.id && oldState.channel && (oldState.channel.id !== newState.channel.id)) {
             oldState.channel.leave();
-            newState.channel.join().then((connection) => {
+            const connection = newState.connection;
+            if (connection) {
                 if (connection.dispatcher) {
                     connection.dispatcher.destroy();
                 }
-            });
+            }
         }
     } catch {}
     try {

@@ -25,13 +25,13 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
 
 
     checkTheTypeOfTheGuild(bot, reaction.message.channel, async () => {
-        const member = await reaction.message.guild.members.fetch(user.id);
-        const channel = reaction.message.guild.me.voice.channel;
-        channel.join().then(async (connection) => {
+        const voiceState = reaction.message.guild.me.voice;
+        const connection = voiceState.connection;
+        const channel = voiceState.channel;
+        if (connection) {
             if (connection.dispatcher) connection.dispatcher.destroy();
-
             bot.musicFunctions.get("joinVoiceChannel").run(bot, channel.id);
-        });
+        }
     });
 }
 
