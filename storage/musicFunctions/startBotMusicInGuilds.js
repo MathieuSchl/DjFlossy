@@ -42,7 +42,11 @@ module.exports.run = async (bot) => {
                     return;
                 };
 
-                voiceChannel.join().catch((err) => {
+                voiceChannel.join().then((connection) => {
+                    connection.on("disconnect", () => {
+                        if (connection.dispatcher) connection.dispatcher.destroy();
+                    })
+                }).catch((err) => {
                     console.log("Error in startBotMusicInGuilds");
                     //console.log(err);
                     console.log(err.code === "VOICE_CONNECTION_TIMEOUT");
