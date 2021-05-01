@@ -1,5 +1,4 @@
 module.exports.run = async (bot, connection, voiceMessage, user) => {
-    console.log(voiceMessage);
     bot.textToSpeech.get("chatBot").run(bot, connection, voiceMessage, user);
 
 

@@ -5,17 +5,21 @@ const {
 const Discord = require('discord.js');
 const watsonConfig = require("../watsonConfig.json");
 
-const assistant = new AssistantV2({
-    version: watsonConfig.version,
-    authenticator: new IamAuthenticator({
-        apikey: watsonConfig.apiKey,
-    }),
-    serviceUrl: watsonConfig.serviceUrl,
-});
 
-function createSeession(assistantName, callBack) {
+function getAssistant(apikey, callBack) {
+    const assistant = new AssistantV2({
+        version: watsonConfig.version,
+        authenticator: new IamAuthenticator({
+            apikey: watsonConfig.assistantsList[apikey].apiKey,
+        }),
+        serviceUrl: watsonConfig.serviceUrl,
+    });
+    callBack(assistant);
+}
+
+function createSeession(assistant, assistantName, callBack) {
     assistant.createSession({
-            assistantId: watsonConfig.assistantsList[assistantName]
+            assistantId: watsonConfig.assistantsList[assistantName].assistantId
         })
         .then(res => {
             const sessionId = res.result.session_id;
@@ -26,9 +30,9 @@ function createSeession(assistantName, callBack) {
         });
 }
 
-function sendMessage(bot, userId, data, message, callBack) {
+function sendMessage(bot, assistant, userId, data, message, callBack) {
     assistant.message({
-            assistantId: watsonConfig.assistantsList[data.assistant],
+            assistantId: watsonConfig.assistantsList[data.assistant].assistantId,
             sessionId: data.sessionId,
             input: {
                 'message_type': 'text',
@@ -40,8 +44,8 @@ function sendMessage(bot, userId, data, message, callBack) {
         })
         .catch(err => {
             if (err.message === "Invalid Session") {
-                screateAndSaveSession(bot, userId, data, (newData) => {
-                    sendMessage(bot, userId, newData, message, callBack);
+                createAndSaveSession(bot, assistant, userId, data, (newData) => {
+                    sendMessage(bot, assistant, userId, newData, message, callBack);
                 });
             } else {
                 console.log(message);
@@ -50,9 +54,9 @@ function sendMessage(bot, userId, data, message, callBack) {
         });
 }
 
-function deleteSession(assistantName, sessionId) {
+function deleteSession(assistant, assistantName, sessionId) {
     assistant.deleteSession({
-            assistantId: watsonConfig.assistantsList[assistantName],
+            assistantId: watsonConfig.assistantsList[assistantName].assistantId,
             sessionId: sessionId,
         })
         .then(res => {
@@ -115,19 +119,21 @@ async function saveSession(bot, userId, data, callBack) {
     });
 }
 
-async function screateAndSaveSession(bot, userId, data, callBack) {
-    createSeession(data.assistant, (sessionId) => {
+async function createAndSaveSession(bot, assistant, userId, data, callBack) {
+    const assistantToCreate = data.assistant ? data.assistant : "general";
+    createSeession(assistant, assistantToCreate, (sessionId) => {
         data.sessionId = sessionId;
+        data.assistant = assistantToCreate;
         saveSession(bot, userId, data, () => {
             callBack(data);
         });
     });
 }
 
-async function processVoiceMessage(bot, connection, voiceMessage, user, data) {
+async function processVoiceMessage(bot, assistant, connection, voiceMessage, user, data) {
     const userId = (connection.channel.guild.id + ">" + user.id);
-    sendMessage(bot, userId, data, voiceMessage, (resMessage) => {
-        //deleteSession(sessionId);
+    sendMessage(bot, assistant, userId, data, voiceMessage, (resMessage) => {
+        //deleteSession(assistant,sessionId);
         try {
             const messageToSend = resMessage.result.output.generic[0].text;
             const category = resMessage.result.output.intents[0].intent;
@@ -135,7 +141,7 @@ async function processVoiceMessage(bot, connection, voiceMessage, user, data) {
             if (messageToSend) bot.textToSpeech.get("textToSpeech").run(bot, connection, messageToSend);
             else console.log(resMessage.result.output);
         } catch (e) {
-            console.log(resMessage);
+            //console.log(resMessage);
         }
     });
 }
@@ -143,13 +149,16 @@ async function processVoiceMessage(bot, connection, voiceMessage, user, data) {
 module.exports.run = async (bot, connection, voiceMessage, user) => {
     const userId = (connection.channel.guild.id + ">" + user.id);
     getSession(bot, userId, (data) => {
-        if (!data.sessionId) {
-            screateAndSaveSession(bot, userId, data, (data) => {
-                processVoiceMessage(bot, connection, voiceMessage, user, data);
-            });
-            return;
-        };
-        processVoiceMessage(bot, connection, voiceMessage, user, data);
+        const assistantName = "general";
+        getAssistant(assistantName, (assistant) => {
+            if (!data.sessionId) {
+                createAndSaveSession(bot, assistant, userId, data, (data) => {
+                    processVoiceMessage(bot, assistant, connection, voiceMessage, user, data);
+                });
+                return;
+            };
+            processVoiceMessage(bot, assistant, connection, voiceMessage, user, data);
+        })
     });
     return;
 };
