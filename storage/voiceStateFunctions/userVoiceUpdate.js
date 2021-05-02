@@ -23,6 +23,7 @@ async function readLogs(guild, toDellete, action, callback) {
         "limit": 1
     })).entries);
 
+    if(!logs[0]) return;
     const log = logs[0][1];
     //console.log(log);
     const logTime = log.createdAt.getTime();
