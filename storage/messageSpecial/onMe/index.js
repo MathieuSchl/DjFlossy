@@ -10,6 +10,8 @@ async function checkTheTypeOfTheGuild(bot, channel, callback) {
         const result = results[0];
         const data = JSON.parse(result.data);
         const type = data.type;
+        callback(type);
+        /*
         if (acceptedTypes.includes(type)) callback();
         else {
             channel.send("C'est fonctionnalité n'est pas disponible pour le momment").then(async (msg) => {
@@ -17,33 +19,43 @@ async function checkTheTypeOfTheGuild(bot, channel, callback) {
                 if (msg.deletable) msg.delete();
             })
         }
+        */
     });
 }
 
-function start(bot, guildId, channelId) {
-    bot.musicFunctions.get("startBotMusicInGuilds").one(bot, guildId, (error, results, fields) => {
-        bot.musicFunctions.get("createPlaylist").run(bot, guildId, () => {
-            bot.musicFunctions.get("joinVoiceChannel").run(bot, channelId);
-        });
-    });
+async function start(bot, guildId, channelId, type) {
+    const channel = await bot.channels.fetch(channelId);
+    const voiceState = channel.guild.me.voice;
+    if (!voiceState.connection) {
+        if (type === "DJ") {
+            bot.musicFunctions.get("startBotMusicInGuilds").one(bot, guildId, (error, results, fields) => {
+                bot.musicFunctions.get("createPlaylist").run(bot, guildId, () => {
+                    bot.musicFunctions.get("joinVoiceChannel").run(bot, channelId);
+                });
+            });
+        } else {
+            await bot.basicFunctions.get("wait").run(1000)
+            channel.join();
+        }
+    }
 }
 
 module.exports.addReaction = async (bot, reaction, user, messageData, index) => {
     reaction.users.remove(user.id);
 
-    checkTheTypeOfTheGuild(bot, reaction.message.channel, async () => {
+    checkTheTypeOfTheGuild(bot, reaction.message.channel, async (type) => {
         const member = await reaction.message.guild.members.fetch(user.id);
         const channel = member.voice.channel;
         if (channel) {
-            const voiceState = reaction.message.guild.me.voice;
-            if (voiceState.channel) {
+            const voiceState = channel.guild.me.voice;
+            if (voiceState.connection) {
                 const connection = voiceState.connection;
                 if (connection.dispatcher) connection.dispatcher.destroy();
                 connection.disconnect();
 
-                start(bot, reaction.message.guild.id, channel.id);
+                start(bot, reaction.message.guild.id, channel.id, type);
             } else {
-                start(bot, reaction.message.guild.id, channel.id);
+                start(bot, reaction.message.guild.id, channel.id, type);
             }
         } else {
             reaction.message.channel.send("<@" + user.id + "> tu n'es pas dans un salon vocal.").then(async (msg) => {
