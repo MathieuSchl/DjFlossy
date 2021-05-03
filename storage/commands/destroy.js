@@ -1,7 +1,7 @@
 const config = require("../config.json");
 const admin = ["210392675478667269"]
 
-module.exports.run = async (bot, message, dataSpecialChannel) => {
+module.exports.run = async (bot, message, channel) => {
     if (message != null) {
         message.delete();
         if (!admin.includes(message.author.id)) {
@@ -11,7 +11,10 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
             })
             return;
         }
-        message.channel.send("Arrêt du bot")
+        channel = message.channel;
+    }
+    if (channel != null) {
+        channel.send("Arrêt du bot")
             .then(msg => {
                 msg.delete({
                     timeout: 1500
@@ -49,14 +52,4 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
 
 module.exports.help = {
     name: "destroy"
-};
-
-module.exports.manuel = {
-    man: "man permet d'afficher le manuel d'une fonction\n" +
-        "Pour ce faire il faut écrire dans le terminal:\n" +
-        "`" + config.prefix + " man [nom de la commande]`"
-};
-
-module.exports.manuelview = {
-    view: false
 };

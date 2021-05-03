@@ -1,3 +1,9 @@
+const config = require("../storage/config.json");
+const fs = require("fs");
+const pathSpecialMessages = config.location + "/storage/data/specialMessageList/";
+const pathSpecialGuilds = config.location + "/storage/data/specialGuild/";
+const pathSpecialVoiceChannels = config.location + "/storage/data/specialVoiceChannelList/";
+
 module.exports.run = async (bot) => {
     const allGuilds = bot.guilds.cache.array();
 
@@ -38,7 +44,7 @@ module.exports.run = async (bot) => {
             try {
                 let channel = await bot.channels.fetch(dataSpecialMessage.channel);
                 channel.messages.fetch(dataSpecialMessage.id).catch((e) => {
-                    console.log(e);
+                    bot.basicFunctions.get("dbDataSpecialMessage").delete(bot, dataSpecialMessage.id, (error, results, fields) => {});
                 });
             } catch {
                 bot.basicFunctions.get("dbDataSpecialMessage").delete(bot, dataSpecialMessage.id, (error, results, fields) => {});
