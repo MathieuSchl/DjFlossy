@@ -8,7 +8,7 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
     try {
         bot.specialTextChannel.dataCenter.get(args[0]).run(bot, message, dataSpecialChannel);
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         bot.specialTextChannel.dataCenter.get("delete").run(bot, message, dataSpecialChannel);
     }
 }
