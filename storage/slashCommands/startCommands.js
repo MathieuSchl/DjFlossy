@@ -147,27 +147,28 @@ module.exports.run = async (bot) => {
     checkAll(bot, () => {
         bot.ws.on('INTERACTION_CREATE', async (interaction) => {
             bot.api.interactions(interaction.id, interaction.token).callback.post({
-                data: {
-                    type: 5
-                }
-            }).then(async (res) => {
-                const command = interaction.data.name.toLowerCase();
-                const args = interaction.data.options;
-                const channel = await bot.channels.fetch(interaction.channel_id);
-                channel.messages.fetch().then(async (messages) => {
-                    const messagesArray = messages.array();
-                    const message = messagesArray[0];
-                    const channel = message.channel;
-                    if (message.deletable) message.delete();
-                    try {
-                        const member = await channel.guild.members.fetch(interaction.member.id);
-                        require(pathSlashCommand + command).runCmd(bot, channel, member, args);
-                    } catch (e) {
-                        console.log(e);
-                        channel.send("Internal error with the command `/" + command + "`");
+                    data: {
+                        type: 5
                     }
                 })
-            })
+                .then(async (res) => {
+                    const command = interaction.data.name.toLowerCase();
+                    const args = interaction.data.options;
+                    const channel = await bot.channels.fetch(interaction.channel_id);
+                    channel.messages.fetch().then(async (messages) => {
+                        const messagesArray = messages.array();
+                        const message = messagesArray[0];
+                        const channel = await bot.channels.fetch(interaction.channel_id);
+                        if (message && message.deletable) message.delete();
+                        try {
+                            const member = await channel.guild.members.fetch(interaction.member.user.id);
+                            require(pathSlashCommand + command).runCmd(bot, channel, member, args);
+                        } catch (e) {
+                            console.log(e);
+                            channel.send("Internal error with the command `/" + command + "`");
+                        }
+                    })
+                }).catch(() => {})
         })
     });
     return;
