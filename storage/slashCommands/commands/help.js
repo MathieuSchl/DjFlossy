@@ -1,10 +1,24 @@
-const name = __filename.split("\\")[__filename.split("\\").length - 1].split(".")[0];
+const getName = () => {
+    const path = __filename;
+    const slashPath = path.split("/");
+    const backSlashPath = path.split("\\");
+    if (slashPath.length !== 1) {
+        return slashPath[slashPath.length - 1].split(".")[0];
+    }
+    if (backSlashPath.length !== 1) {
+        return backSlashPath[backSlashPath.length - 1].split(".")[0];
+    } else {
+        return null;
+    }
+}
+
+const name = getName();
 const Discord = require('discord.js');
 
 
 module.exports.runCmd = async (bot, channel, member, args) => {
     bot.basicFunctions.get("dbDataSpecialGuild").select(bot, channel.guild.id, (error, results, fields) => {
-        if(error) throw error;
+        if (error) throw error;
         const commandChannel = results[0] ? results[0].data ? results[0].data.pannel : null : null;
         const helpEmbed = new Discord.MessageEmbed()
             .setColor('#37FF00')
