@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 
 module.exports.runCmd = async (bot, channel, member, args) => {
     bot.basicFunctions.get("dbDataSpecialGuild").select(bot, channel.guild.id, (error, results, fields) => {
+        if(error) throw error;
         const commandChannel = results[0] ? results[0].data ? results[0].data.pannel : null : null;
         const helpEmbed = new Discord.MessageEmbed()
             .setColor('#37FF00')
@@ -20,12 +21,7 @@ module.exports.runCmd = async (bot, channel, member, args) => {
             helpEmbed.setDescription("Le channel de commandes de DjFlossy n'est pas parramètré");
         }
 
-        channel.send(helpEmbed).then(async (msg) => {
-            await bot.basicFunctions.get("wait").run(1500);
-            if (msg.deleted) {
-                member.send(helpEmbed);
-            }
-        })
+        bot.slashCommands.get("sendMessage").run(bot, helpEmbed, channel, member);
     });
 };
 
@@ -36,5 +32,5 @@ module.exports.data = {
 
 module.exports.help = {
     name: name,
-    globalCommand: false
+    globalCommand: true
 };
