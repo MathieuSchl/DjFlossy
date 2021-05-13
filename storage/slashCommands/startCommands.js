@@ -157,10 +157,6 @@ module.exports.run = async (bot) => {
                     const args = interaction.data.options;
                     const channel = await bot.channels.fetch(interaction.channel_id);
                     channel.messages.fetch().then(async (messages) => {
-                        messages.forEach((message) => {
-                            console.log(message.id);
-                        })
-                        console.log(interaction);
                         const messagesArray = messages.array();
                         const message = messagesArray[0];
                         const channel = await bot.channels.fetch(interaction.channel_id);
