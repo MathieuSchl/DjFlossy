@@ -50,7 +50,7 @@ module.exports.runCmd = async (bot, channel, member, args) => {
 
 module.exports.data = {
     name: name,
-    description: "Permet d'avoir de l'aide"
+    description: "Explains how the bot works"
 };
 
 module.exports.help = {
