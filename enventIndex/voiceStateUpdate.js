@@ -23,6 +23,7 @@ async function getVoiceChannelData(bot, guildId, oldVoiceChannelId, newVoiceChan
 
 module.exports.run = async (bot, oldState, newState) => {
     getVoiceChannelData(bot, oldState.guild.id, oldState.channelID, newState.channelID, async (oldDatavoiceChannel, newDatavoiceChannel, type) => {
+        bot.voiceStateFunctions.get("joinExitTimeStamp").run(bot, oldState, newState, oldDatavoiceChannel, newDatavoiceChannel);
         bot.voiceStateFunctions.get("userVoiceUpdate").run(bot, oldState, newState, oldDatavoiceChannel, newDatavoiceChannel);
         try {
             bot.voiceStateFunctions.get(type).run(bot, oldState, newState, oldDatavoiceChannel, newDatavoiceChannel);

@@ -1,0 +1,32 @@
+{
+    "time_1H": {
+        "fr": {
+            "title": "<BOTTAG> mieux que Rythm ?",
+            "description": "Passez 1 heure au total en compagnie de <BOTTAG>"
+        }
+    },
+    "time_1D": {
+        "fr": {
+            "title": "Un grand fan",
+            "description": "Passez 1 jour au total en compagnie de <BOTTAG>"
+        }
+    },
+    "secretPlaylist_1": {
+        "fr": {
+            "title": "Il y a d'autre playlist ?",
+            "description": "Trouvez et écoutez 1 playlist secrète"
+        }
+    },
+    "secretPlaylist_3": {
+        "fr": {
+            "title": "Chasseur de nouvelle sonorité",
+            "description": "Trouvez et écoutez 3 playlist secrète"
+        }
+    },
+    "easterEgg_Chloe": {
+        "fr": {
+            "title": "Une amie pour la vie",
+            "description": "Trouvez l'easter egg"
+        }
+    }
+}
