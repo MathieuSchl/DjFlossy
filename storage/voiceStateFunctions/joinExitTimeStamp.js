@@ -42,8 +42,8 @@ async function sendNotification(bot, idUser, trophyName, trophyDescription) {
         .setColor('#30F1AE')
         .setTitle('Nouveau trophée obtenu')
         .setDescription('Vous avez obtenu un nouveau trophée:\n' +
-            "Trophée : " + trophyName + "\n" +
-            "Descrition : " + trophyDescription)
+            "Trophée : `" + trophyName + "`\n" +
+            "Descrition : `" + trophyDescription + "`")
         .setTimestamp();
 
     user.send(trophyEmbed);
@@ -66,7 +66,7 @@ function checkNewAcheivement(bot, data) {
 }
 
 function updateUserDataWhenDisconnect(bot, idUser, actualTime) {
-    bot.basicFunctions.get("dbUserAchevements").select(bot, idUser, (error, results, fields) => {
+    bot.basicFunctions.get("dbUserAchievements").select(bot, idUser, (error, results, fields) => {
         if (error) throw error;
         const result = results[0];
         if (!result.data.dateJoinVc) return;
@@ -74,18 +74,18 @@ function updateUserDataWhenDisconnect(bot, idUser, actualTime) {
         const data = updateTimeSpend(result, actualTime - startingTime);
         delete data.data.dateJoinVc;
         const dataAfterCheck = checkNewAcheivement(bot, data);
-        bot.basicFunctions.get("dbUserAchevements").update(bot, dataAfterCheck, (error, results, fields) => {
+        bot.basicFunctions.get("dbUserAchievements").update(bot, dataAfterCheck, (error, results, fields) => {
             if (error) throw error;
         });
     });
 }
 
 function updateUserDataWhenJoin(bot, idUser, actualTime) {
-    bot.basicFunctions.get("dbUserAchevements").select(bot, idUser, (error, results, fields) => {
+    bot.basicFunctions.get("dbUserAchievements").select(bot, idUser, (error, results, fields) => {
         if (error) throw error;
         const result = results[0];
         result.data.dateJoinVc = actualTime;
-        bot.basicFunctions.get("dbUserAchevements").update(bot, result, (error, results, fields) => {
+        bot.basicFunctions.get("dbUserAchievements").update(bot, result, (error, results, fields) => {
             if (error) throw error;
         });
     });

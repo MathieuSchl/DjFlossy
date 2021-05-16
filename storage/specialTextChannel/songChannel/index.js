@@ -1,3 +1,5 @@
+const fs = require('fs');
+const pathSlashCommand = require("../../config.json").location + "/storage/specialTextChannel/songChannel/secretPlaylist/";
 const system = "songChannel"
 
 async function changeCharFromSting(index, char, sting) {
@@ -10,7 +12,19 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
         bot.specialTextChannel[system].get(command).run(bot, message, dataSpecialChannel);
     } catch (e) {
         //console.log(e);
-        bot.specialTextChannel[system].get("customSong").run(bot, message, dataSpecialChannel);
+        fs.readdir(pathSlashCommand, (err, files) => {
+            if (err) throw err;
+
+            const lowCommand = message.content.split(" ")[0].toLowerCase();
+            for (let index = 0; index < files.length; index++) {
+                const element = require(pathSlashCommand + files[index]);
+                if (element.help.acceptedWord.includes(lowCommand)) {
+                    element.run(bot, message, dataSpecialChannel);
+                    return;
+                }
+            }
+            bot.specialTextChannel[system].get("customSong").run(bot, message, dataSpecialChannel);
+        })
     }
 }
 

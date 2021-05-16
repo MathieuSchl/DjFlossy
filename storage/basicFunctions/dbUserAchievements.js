@@ -18,7 +18,7 @@ module.exports.select = async (bot, idUser, callback) => {
 
 module.exports.update = async (bot, data, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `data` = ?, `easterEgg_Chloe` = ?, `secretPlaylist_1` = ?, `time_1H` = ?, `time_1D` = ? WHERE `id` = ?", [dbPrefix + "achievements", JSON.stringify(data.data), data.easterEgg_Chloe, data.secretPlaylist_1, data.time_1H, data.time_1D, data.id], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `data` = ?, `easterEgg_Chloe` = ?, `secretPlaylist_1` = ?, `secretPlaylist_3` = ?, `time_1H` = ?, `time_1D` = ? WHERE `id` = ?", [dbPrefix + "achievements", JSON.stringify(data.data), data.easterEgg_Chloe, data.secretPlaylist_1, data.secretPlaylist_3, data.time_1H, data.time_1D, data.id], (error, results, fields) => {
         callback(error, results, fields);
         return;
     });
@@ -41,5 +41,5 @@ module.exports.delete = async (bot, idUser, callback) => {
 };
 
 module.exports.help = {
-    name: "dbUserAchevements"
+    name: "dbUserAchievements"
 };

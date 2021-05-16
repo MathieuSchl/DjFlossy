@@ -58,7 +58,7 @@ async function addOneAchievement(bot, channel, member, embed, dataAchievement, a
 }
 
 module.exports.runCmd = async (bot, channel, member, args) => {
-    bot.basicFunctions.get("dbUserAchevements").select(bot, member.user.id, async (error, results, fields) => {
+    bot.basicFunctions.get("dbUserAchievements").select(bot, member.user.id, async (error, results, fields) => {
         if (error) throw error;
         const result = results[0];
         const achievementsName = Object.keys(result);
