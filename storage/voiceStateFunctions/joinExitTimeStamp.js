@@ -116,9 +116,21 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
             await bot.basicFunctions.get("wait").run(100);
         }
     } else if (theAction === "join") {
-        updateUserDataWhenJoin(bot, oldState.member.user.id, actualTime);
+        const botIsPresent = (newState.channel.members.get(bot.user.id)) != null;
+        if (botIsPresent) updateUserDataWhenJoin(bot, newState.member.user.id, actualTime);
     } else if (theAction === "disconect") {
-        updateUserDataWhenDisconnect(bot, oldState.member.user.id, actualTime);
+        const botIsPresent = (oldState.channel.members.get(bot.user.id)) != null;
+        if (botIsPresent) updateUserDataWhenDisconnect(bot, oldState.member.user.id, actualTime);
+    } else if (theAction === "move") {
+        const botIsPresentInOldChannel = (oldState.channel.members.get(bot.user.id)) != null;
+        const botIsPresentInNewChannel = (newState.channel.members.get(bot.user.id)) != null;
+        if (botIsPresentInOldChannel) {
+            updateUserDataWhenDisconnect(bot, oldState.member.user.id, actualTime);
+        } else if (botIsPresentInNewChannel) {
+            updateUserDataWhenJoin(bot, newState.member.user.id, actualTime);
+        } else {
+            console.log("error user does not leave or join the voice channel");
+        }
     }
 };
 

@@ -11,6 +11,7 @@ async function getUserData(bot, userId, callback) {
 function detectTheAction(oldState, newState) {
     if (!oldState.channel && newState.channel) return "join";
     if (oldState.channel && !newState.channel) return "disconect";
+    if (oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) return "move";
     if ((oldState.serverMute) === false && (newState.serverMute) === true) return "serverMute";
     if ((oldState.serverDeaf) === false && (newState.serverDeaf) === true) return "serverDeaf";
     if ((oldState.serverMute) === true && (newState.serverMute) === false) return "serverUnMute";
@@ -23,7 +24,7 @@ async function readLogs(guild, toDellete, action, callback) {
         "limit": 1
     })).entries);
 
-    if(!logs[0]) return;
+    if (!logs[0]) return;
     const log = logs[0][1];
     //console.log(log);
     const logTime = log.createdAt.getTime();
