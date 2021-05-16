@@ -91,7 +91,8 @@ module.exports.checkOne = async (bot, dataGuild, path, callback) => {
                     if ((ifGlobalCommand && (dataGuild == null)) || (!ifGlobalCommand && (dataGuild != null))) files[index] = require(path + files[index]).data;
                     else files.splice(index, 1);
                 } catch (e) {
-                    files.splice(index, 1);
+                    console.log(e);
+                    //files.splice(index, 1);
                 }
             };
 
