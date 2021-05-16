@@ -54,7 +54,7 @@ function checkNewAcheivement(bot, data) {
         const title = dataTrophy.time_1H["fr"].title.replace('<BOTTAG>', bot.user.username);
         const description = dataTrophy.time_1H["fr"].description.replace('<BOTTAG>', bot.user);
         sendNotification(bot, data.id, title, description);
-        data.time_1H = true;
+        data.time_1H = bot.basicFunctions.get("getDateSqlFormat").run();
     }
     if ((!data.time_1D) && (data.data.d >= 1)) {
         const title = dataTrophy.time_1D["fr"].title;
