@@ -13,6 +13,7 @@ async function addSong(bot, musicTag, playlists) {
 
                 bot.dataBase.get("connection").exec(bot.db, 'SELECT `id` FROM ?? WHERE `tagName` = ?', ["musicsList", musicTag], (error, results, fields) => {
                     if (error) throw error;
+                    console.log("insert");
 
                     const idMusic = results[0].id;
                     playlists.forEach(element => {
@@ -31,8 +32,6 @@ module.exports.run = async (bot) => {
     //modify tour cron here
 
     const job = new CronJob('0 30 05 * * *', async function () {
-        job.stop();
-        return;
         bot.dataBase.get("connection").exec(bot.db, 'SELECT `playListTag`, `playlist` FROM ??', ["playlistsList"], (error, results, fields) => {
             if (error) throw error;
 
@@ -40,13 +39,13 @@ module.exports.run = async (bot) => {
                 results.forEach(async (element) => {
                     const playListTag = element.playListTag;
                     const playlist = JSON.parse(element.playlist);
-
-                    playlists(playListTag).then(async (playListData) => {
+    
+                    bot.basicFunctions.get("getVideosFromYtPlaylist").run(playListTag, async (playListTags) => {
                         //const theLastXMusics = playListData.videos.length;
                         const theLastXMusics = 3;
-                        for (let index = 0; index < theLastXMusics; index++) {
-                            const element = playListData.videos[index];
-                            addSong(bot, element.id, playlist);
+                        for (let index = 0; index < theLastXMusics && index < playListTags.length; index++) {
+                            const element = playListTags[index];
+                            addSong(bot, element, playlist);
                             await bot.basicFunctions.get("wait").run(1000);
                         }
                     });
