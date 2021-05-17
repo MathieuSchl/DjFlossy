@@ -15,7 +15,7 @@ function getVideosTag(playlistId, videoList, nextPageToken, callback) {
             const element = bodyObject.items[index].snippet.resourceId.videoId;
             videoList.push(element);
         }
-        if (bodyObject.nextPageToken) getVideosTag("PLNdO3e3fKSGdupU0x0d1chpiPrc9YBG71", videoList, bodyObject.nextPageToken, callback);
+        if (bodyObject.nextPageToken) getVideosTag(playlistId, videoList, bodyObject.nextPageToken, callback);
         else return callback(videoList)
     });
 }
