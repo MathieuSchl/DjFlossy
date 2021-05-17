@@ -2,27 +2,18 @@ const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 
 
-module.exports.run = async (bot, message, dataSpecialChannel) => {
-    const args = message.content.split(" ");
-    if (args.length === 0) {
-        message.channel.send("Merci de mettre l'url d'une musique youtube").then(async (msg) => {
-            await bot.basicFunctions.get("wait").run(20000);
-            if (msg.deletable) msg.delete();
-        });
-        return;
-    }
-    if ((!ytdl.validateID(args[0])) && (!ytdl.validateURL(args[0]))) {
+function next(bot, message, dataSpecialChannel, musicTag) {
+    if (musicTag == null) {
         message.channel.send("L'URL de la vidéo n'est pas correct").then(async (msg) => {
             await bot.basicFunctions.get("wait").run(20000);
             if (msg.deletable) msg.delete();
         });
         return;
     }
-    const info = await ytdl.getInfo(args[0]);
-    bot.dataBase.get("connection").exec(bot.db, "SELECT * FROM ?? WHERE tagName = ?", ["musicsList", info.videoDetails.videoId], async (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, "SELECT * FROM ?? WHERE tagName = ?", ["musicsList", musicTag], async (error, results, fields) => {
         if (error) throw error;
 
-        if (results.length !== 0) {
+        if ((musicTag.length === 11) && results.length !== 0) {
             message.channel.send("Cette musique existe déjà").then(async (msg) => {
                 await bot.basicFunctions.get("wait").run(20000);
                 if (msg.deletable) msg.delete();
@@ -32,7 +23,7 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
 
         const data = dataSpecialChannel.data;
         data.status = "playList";
-        data.musicTag = info.videoDetails.videoId;
+        data.musicTag = musicTag;
         const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
         bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `data` = ? WHERE `id` = ?", [dbPrefix + "specialTextChannel", JSON.stringify(data), dataSpecialChannel.id], async (error, results, fields) => {
 
@@ -62,6 +53,24 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
             });
         });
     });
+}
+
+module.exports.run = async (bot, message, dataSpecialChannel) => {
+    const args = message.content.split(" ");
+    if (args.length === 0) {
+        message.channel.send("Merci de mettre l'url d'une musique youtube").then(async (msg) => {
+            await bot.basicFunctions.get("wait").run(20000);
+            if (msg.deletable) msg.delete();
+        });
+        return;
+    }
+    let musicTag = (ytdl.validateID(args[0])) || (ytdl.validateURL(args[0])) ? (await ytdl.getInfo(args[0])).videoDetails.videoId : null;
+    if (musicTag == null) musicTag = bot.basicFunctions.get("getVideosFromYtPlaylist").validateURL(args[0], (playlistId) => {
+        next(bot, message, dataSpecialChannel, playlistId);
+    })
+    else {
+        next(bot, message, dataSpecialChannel, musicTag);
+    }
 }
 
 module.exports.help = {
