@@ -90,5 +90,5 @@ module.exports.data = {
 
 module.exports.help = {
     name: name,
-    globalCommand: false
+    globalCommand: true
 };
