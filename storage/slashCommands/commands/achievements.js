@@ -22,13 +22,13 @@ function convertSqlDateToString(sqlDate) {
     return ("0" + theDate.getDate()).slice(-2) + "/" + ("0" + (theDate.getMonth() + 1)).slice(-2) + "/" + theDate.getFullYear();
 }
 
-async function addOneAchievement(bot, channel, member, embed, dataAchievement, achievementsName, countChar, usersCount, callback) {
+async function addOneAchievement(bot, channel, user, embed, dataAchievement, achievementsName, countChar, usersCount, callback) {
     if (achievementsName.length === 0) {
         callback(embed);
         return;
     }
     if (countChar > 1900) {
-        member.send(embed);
+        user.send(embed);
         const color = embed.color;
         embed = new Discord.MessageEmbed()
             .setColor(color)
@@ -52,13 +52,14 @@ async function addOneAchievement(bot, channel, member, embed, dataAchievement, a
             "Obtenu : `" + count + "`";
         countChar += description.length;
         embed.addField(title, description, true);
-        addOneAchievement(bot, channel, member, embed, dataAchievement, achievementsName, countChar, usersCount, callback);
+        addOneAchievement(bot, channel, user, embed, dataAchievement, achievementsName, countChar, usersCount, callback);
         return;
     });
 }
 
 module.exports.runCmd = async (bot, channel, member, args) => {
-    bot.basicFunctions.get("dbUserAchievements").select(bot, member.user.id, async (error, results, fields) => {
+    const user = member.guild ? member.user : member;
+    bot.basicFunctions.get("dbUserAchievements").select(bot, user.id, async (error, results, fields) => {
         if (error) throw error;
         const result = results[0];
         const achievementsName = Object.keys(result);
@@ -66,16 +67,16 @@ module.exports.runCmd = async (bot, channel, member, args) => {
         let countChar = 0;
         let helpEmbed = new Discord.MessageEmbed()
             .setColor('#F9F51F')
-        const title = "Liste de trophé de " + member.user.username;
+        const title = "Liste de trophé de " + user.username;
         countChar += title.length;
         helpEmbed.setTitle(title);
         const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
         bot.dataBase.get("connection").exec(bot.db, 'SELECT COUNT(*) FROM ??', [dbPrefix + "achievements"], (error, results, fields) => {
             if (error) throw error;
             const usersCount = results[0]["COUNT(*)"];
-            addOneAchievement(bot, channel, member, helpEmbed, result, achievementsName, countChar, usersCount, (lastEmbed) => {
+            addOneAchievement(bot, channel, user, helpEmbed, result, achievementsName, countChar, usersCount, (lastEmbed) => {
                 lastEmbed.setTimestamp()
-                member.send(lastEmbed);
+                user.send(lastEmbed);
             });
             return;
         });
