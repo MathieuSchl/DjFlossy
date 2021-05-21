@@ -1,5 +1,4 @@
 var CronJob = require('cron').CronJob;
-const playlists = require("yt-playlist-scraper")
 const name = "addSongFromPlayList"; //Set name here
 
 
@@ -13,7 +12,6 @@ async function addSong(bot, musicTag, playlists) {
 
                 bot.dataBase.get("connection").exec(bot.db, 'SELECT `id` FROM ?? WHERE `tagName` = ?', ["musicsList", musicTag], (error, results, fields) => {
                     if (error) throw error;
-                    console.log("insert");
 
                     const idMusic = results[0].id;
                     playlists.forEach(element => {
