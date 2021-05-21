@@ -50,15 +50,47 @@ async function sendNotification(bot, idUser, trophyName, trophyDescription) {
 }
 
 function checkNewAcheivement(bot, data) {
+    if (data.sevenDaysInARow == null) {
+        const now = new Date();
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
+        now.setMilliseconds(0);
+
+        if (!data.data.previousDay) {
+            data.data.previousDay = now.getTime();
+            data.data.numberDaysInARow = 1;
+        } else {
+            now.setDate(now.getDate() - 1);
+            if (now.getTime() > data.data.previousDay) {
+                data.data.previousDay = now.getTime();
+                data.data.numberDaysInARow = 1;
+            } else if (now.getTime() === data.data.previousDay) {
+                data.data.previousDay = now.getTime();
+                data.data.numberDaysInARow++;
+                if (data.data.numberDaysInARow >= 7) {
+                    const title = dataTrophy.sevenDaysInARow["fr"].title;
+                    const description = dataTrophy.sevenDaysInARow["fr"].description.replace('<BOTTAG>', bot.user.username);
+                    sendNotification(bot, data.id, title, description);
+                    data.sevenDaysInARow = bot.basicFunctions.get("getDateSqlFormat").run();
+                    delete data.data.numberDaysInARow;
+                    delete data.data.previousDay;
+                }
+            }
+        }
+    }
+
+    //Acheivement 1 hour
     if ((!data.time_1H) && (data.data.h >= 1)) {
         const title = dataTrophy.time_1H["fr"].title.replace('<BOTTAG>', bot.user.username);
-        const description = dataTrophy.time_1H["fr"].description.replace('<BOTTAG>', bot.user);
+        const description = dataTrophy.time_1H["fr"].description.replace('<BOTTAG>', bot.user.username);
         sendNotification(bot, data.id, title, description);
         data.time_1H = bot.basicFunctions.get("getDateSqlFormat").run();
     }
+    //Acheivement 1 day
     if ((!data.time_1D) && (data.data.d >= 1)) {
         const title = dataTrophy.time_1D["fr"].title;
-        const description = dataTrophy.time_1D["fr"].description.replace('<BOTTAG>', bot.user);
+        const description = dataTrophy.time_1D["fr"].description.replace('<BOTTAG>', bot.user.username);
         sendNotification(bot, data.id, title, description);
         data.time_1D = true;
     }

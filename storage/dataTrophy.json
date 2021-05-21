@@ -23,6 +23,12 @@
             "description": "Trouvez et écoutez 3 playlists secrètes"
         }
     },
+    "sevenDaysInARow": {
+        "fr": {
+            "title": "Un fidel auditeur",
+            "description": "Ecouter le bot <BOTTAG> 7 jours de suite"
+        }
+    },
     "easterEgg_Chloe": {
         "fr": {
             "title": "Une amie pour la vie",
