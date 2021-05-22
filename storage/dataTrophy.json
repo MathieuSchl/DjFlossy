@@ -1,38 +1,62 @@
 {
     "time_1H": {
         "fr": {
-            "title": "<BOTTAG> mieux que Rythm ?",
+            "title": "<BOTTAG> mieux que Rythm?",
             "description": "Passez 1 heure au total en compagnie de <BOTTAG>"
+        },
+        "en": {
+            "title": "<BOTTAG> better than Rythm?",
+            "description": "Spend a total of 1 hour with <BOTTAG>"
         }
     },
     "time_1D": {
         "fr": {
             "title": "Un grand fan",
             "description": "Passez 1 jour au total en compagnie de <BOTTAG>"
+        },
+        "en": {
+            "title": "A huge fan",
+            "description": "Spend a total of 1 day with <BOTTAG>"
         }
     },
     "secretPlaylist_1": {
         "fr": {
-            "title": "Il y a d'autres playlists ?",
+            "title": "Il y a d'autres playlists?",
             "description": "Trouvez et écoutez 1 playlist secrète"
+        },
+        "en": {
+            "title": "Are there other playlists?",
+            "description": "Find and listen to 1 secret playlist"
         }
     },
     "secretPlaylist_3": {
         "fr": {
             "title": "Chasseur de nouvelles sonorités",
             "description": "Trouvez et écoutez 3 playlists secrètes"
+        },
+        "en": {
+            "title": "Hunter of new sounds",
+            "description": "Find and listen to 1 secrets playlists"
         }
     },
     "sevenDaysInARow": {
         "fr": {
             "title": "Un fidel auditeur",
             "description": "Ecouter le bot <BOTTAG> 7 jours de suite"
+        },
+        "en": {
+            "title": "A loyal listener",
+            "description": "Listen to the bot <BOTTAG> 7 days in a row"
         }
     },
     "easterEgg_Chloe": {
         "fr": {
             "title": "Une amie pour la vie",
             "description": "Trouvez l'easter egg"
+        },
+        "en": {
+            "title": "A friend for life",
+            "description": "Find the easter egg"
         }
     }
 }
