@@ -40,7 +40,8 @@ module.exports.runCmd = async (bot, channel, member, args) => {
                         "-Une playlist est désactivé s'il y a 1 réaction\n" +
                         "-Une playlist est activé s'il y a 2 réactions\n" +
                         "-Si y a 3 réactions les réactions vont être suprimé pour qu'il y en ai plus qu'une seule");
-                helpEmbed.addField("Autres commandes", "D'autres commandes sont disponibles pour le bot. Pour utiliser ces commandes, il suffit de cliquer sur l'emoji de la commande à utiliser");
+                        helpEmbed.addField("Autres commandes", "D'autres commandes sont disponibles pour le bot. Pour utiliser ces commandes, il suffit de cliquer sur l'emoji de la commande à utiliser");
+                        helpEmbed.addField("Plus de Détails", "Pour plus de détails sur les commandes utilisez la commande `/mancommands`");
             }
         }
 
