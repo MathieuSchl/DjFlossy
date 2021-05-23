@@ -18,7 +18,23 @@ module.exports.select = async (bot, idUser, callback) => {
 
 module.exports.update = async (bot, data, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `data` = ?, `easterEgg_Chloe` = ?, `secretPlaylist_1` = ?, `secretPlaylist_3` = ?, `time_1H` = ?, `time_1D` = ?, `sevenDaysInARow` = ? WHERE `id` = ?", [dbPrefix + "achievements", JSON.stringify(data.data), data.easterEgg_Chloe, data.secretPlaylist_1, data.secretPlaylist_3, data.time_1H, data.time_1D, data.sevenDaysInARow, data.id], (error, results, fields) => {
+    let query = "UPDATE ?? SET `data` = ?";
+    const options = [dbPrefix + "achievements", JSON.stringify(data.data)];
+    const id = data.id;
+    delete data.data;
+    delete data.id;
+
+    const keys = Object.keys(data);
+    for (let index = 0; index < keys.length; index++) {
+        const element = keys[index];
+        const value = data[element];
+        query=query+", `"+element+"` = ?";
+        options.push(value);
+    }
+
+    query = query + " WHERE `id` = ?";
+    options.push(id);
+    bot.dataBase.get("connection").exec(bot.db, query, options, (error, results, fields) => {
         callback(error, results, fields);
         return;
     });
