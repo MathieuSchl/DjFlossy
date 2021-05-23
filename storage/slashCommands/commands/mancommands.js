@@ -20,7 +20,7 @@ module.exports.runCmd = async (bot, channel, member, args) => {
     bot.basicFunctions.get("dbDataSpecialGuild").select(bot, channel.guild ? channel.guild.id : null, async (error, results, fields) => {
         if (error) throw error;
         const commandChannel = results[0] ? results[0].data ? results[0].data.pannel : null : null;
-        const channelString = commandChannel ? (await bot.channel.fetch(commandChannel)).name : " de commande";
+        const channelString = commandChannel ? "<#" + commandChannel + ">" : "de commande";
         const helpEmbed = new Discord.MessageEmbed()
             .setColor('#37FF00')
             .setTitle(bot.user.username + ' menu d\'aide');
