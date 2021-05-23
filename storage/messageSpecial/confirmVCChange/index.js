@@ -31,8 +31,6 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                     break;
             }
         }
-        console.log(preDataChannel);
-        console.log(emojiVoiceType);
         if (preDataChannel.index == null || emojiVoiceType == null) return;
 
         bot.basicFunctions.get("dbDataSpecialMessage").select(bot, preDataChannel.messageid, async (error, results, fields) => {
@@ -52,7 +50,6 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                 const voice = guild.voice;
                 guildResult.ttsAvailable = false;
                 guildResult.data.waitingTTS = [];
-                console.log(emojiVoiceType.emoji);
                 switch (emojiVoiceType.emoji) {
                     case "🎧":
                         if (guildResult.data.type === "DJ") return;
