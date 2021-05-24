@@ -55,7 +55,6 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                     const channel = await bot.channels.fetch(guildResult.data.ttsChannel);
                     channel.delete();
                     delete guildResult.data.ttsChannel;
-                    console.log(guildResult);
                 }
 
                 switch (emojiVoiceType.emoji) {
