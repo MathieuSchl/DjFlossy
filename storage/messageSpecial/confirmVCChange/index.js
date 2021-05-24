@@ -50,6 +50,14 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                 const voice = guild.voice;
                 guildResult.ttsAvailable = false;
                 guildResult.data.waitingTTS = [];
+
+                if (guildResult.data.type === "TTS" && emojiVoiceType.emoji !== "🎙️") {
+                    const channel = await bot.channels.fetch(guildResult.data.ttsChannel);
+                    channel.delete();
+                    delete guildResult.data.ttsChannel;
+                    console.log(guildResult);
+                }
+
                 switch (emojiVoiceType.emoji) {
                     case "🎧":
                         if (guildResult.data.type === "DJ") return;
