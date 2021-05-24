@@ -1,6 +1,3 @@
-const {
-    table
-} = require("console");
 const fs = require("fs")
 
 module.exports.getDbPrefix = async (bot) => {

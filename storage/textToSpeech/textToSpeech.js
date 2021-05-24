@@ -25,7 +25,6 @@ async function sayText(bot, connection, broadcast) {
       if (error) throw error;
 
       const stream = discordTTS.getVoiceStream(text);
-      console.log(stream);
       const dispatcher = broadcast.play(stream, {
         "volume": 3
       });
