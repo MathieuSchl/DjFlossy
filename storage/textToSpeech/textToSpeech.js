@@ -24,7 +24,9 @@ async function sayText(bot, connection, broadcast) {
     bot.dataBase.get("connection").exec(bot.db, 'UPDATE ?? SET `data` = ? WHERE `id` = ?', [dbPrefix + "specialGuild", JSON.stringify(result.data), guildId], async (error) => {
       if (error) throw error;
 
-      const dispatcher = broadcast.play(discordTTS.getVoiceStream(text), {
+      const stream = discordTTS.getVoiceStream(text);
+      console.log(stream);
+      const dispatcher = broadcast.play(stream, {
         "volume": 3
       });
 
