@@ -53,7 +53,7 @@ async function startCron(bot, data) {
     });
 
     return {
-        "name": data.type + ">" + user.username,
+        "name": data.type + ">" + user.username + "_" + data.id,
         "job": job
     };
 }
