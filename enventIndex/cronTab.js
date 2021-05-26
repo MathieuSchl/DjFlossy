@@ -40,8 +40,7 @@ async function startCron(bot, data) {
 
         nowDate.setUTCDate(nowDate.getUTCDate() + 2);
         if (nowDate < cronDate) return;
-        data.cronSchedule = cronElements[0] + " " + cronElements[1] + " " + (cronElements[2] === "*" ? cronElements[2] : cronDate.getHours()) + " " + cronElements[3] + " " + cronElements[4] + " " + cronElements[5];
-    } catch (e) {
+        } catch (e) {
         //console.log(e);
     }
 
