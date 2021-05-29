@@ -31,6 +31,8 @@ async function startCron(bot, data) {
             cronDate.setUTCDate(cronDate.getUTCDate() + parseInt(cronElements[5]));
         }
 
+        if ((data.data.year) && (data.data.year != nowDate.getFullYear())) return;
+
         if ((cronElements[0] !== "*") && (cronElements[1] !== "*") && (cronElements[2] !== "*") && (cronElements[3] !== "*") && (cronElements[4] !== "*")) {
             if ((data.repetitive) && (nowDate > cronDate)) {
                 deleteCronInDb(bot, data.id);
@@ -40,12 +42,21 @@ async function startCron(bot, data) {
 
         nowDate.setUTCDate(nowDate.getUTCDate() + 2);
         if (nowDate < cronDate) return;
-        } catch (e) {
+    } catch (e) {
         //console.log(e);
     }
 
     const job = new CronJob(data.cronSchedule, async function () {
         user.send(data.data.mess);
+
+        const nowDate = new Date();
+        const logsEmbed = new Discord.MessageEmbed()
+            .setColor('#FF9504')
+            .setTitle('Cron envoyé')
+            .setDescription("Cron envoyé à `" + user.username + "` à `" + `${nowDate.getDate()}/${nowDate.getMonth()}/${nowDate.getFullYear()} ${nowDate.getHours()}:${nowDate.getMinutes()}` + "`\n" +
+                "Message : `" + data.data.mess + "`");
+        member.user.send(logsEmbed);
+
         if (!data.repetitive) {
             job.stop();
             deleteCronInDb(bot, data.id);
@@ -57,7 +68,6 @@ async function startCron(bot, data) {
         "job": job
     };
 }
-
 
 async function startMPCron(bot) {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
@@ -101,6 +111,10 @@ module.exports.stop = async (bot) => {
             bot.cronTab.get(cron[0]).stop();
         }
     } catch {}
+};
+
+module.exports.start = async (bot, data) => {
+    return await startCron(bot, data);
 };
 
 
