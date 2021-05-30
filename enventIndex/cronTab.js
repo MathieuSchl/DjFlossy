@@ -55,7 +55,7 @@ async function startCron(bot, data) {
             .setTitle('Cron envoyé')
             .setDescription("Cron envoyé à `" + user.username + "` à `" + `${nowDate.getDate()}/${nowDate.getMonth()}/${nowDate.getFullYear()} ${nowDate.getHours()}:${nowDate.getMinutes()}` + "`\n" +
                 "Message : `" + data.data.mess + "`");
-        member.user.send(logsEmbed);
+        user.send(logsEmbed);
 
         if (!data.repetitive) {
             job.stop();
