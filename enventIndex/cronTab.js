@@ -1,5 +1,7 @@
 const Discord = require("discord.js");
-var CronJob = require('cron').CronJob;
+const CronJob = require('cron').CronJob;
+const config = require("../storage/config.json");
+const botInLocal = (__filename.split("/").length === 1) ? true : false;
 
 
 async function deleteCronInDb(bot, id) {
@@ -24,6 +26,7 @@ async function startCron(bot, data) {
         if (cronElements[2] !== "*") cronDate.setUTCHours(cronElements[2]);
         if (cronElements[3] !== "*") cronDate.setUTCDate(cronElements[3]);
         if (cronElements[4] !== "*") cronDate.setUTCMonth(cronElements[4]);
+        if (data.data.year) cronDate.setUTCFullYear(data.data.year);
         if (cronElements[5] !== "*") {
             if (cronElements[5] < cronDate.getDay()) {
                 cronDate.setUTCDate(cronDate.getUTCDate() + (7 - cronDate.getDay()));
@@ -40,6 +43,11 @@ async function startCron(bot, data) {
             }
         }
 
+        if (botInLocal) {
+            const cronSchedule = (cronElements[0] === "*" ? cronElements[0] : ("0" + cronDate.getSeconds()).slice(-2)) + " " + (cronElements[1] === "*" ? cronElements[1] : ("0" + cronDate.getMinutes()).slice(-2)) + " " + (cronElements[2] === "*" ? cronElements[2] : ("0" + cronDate.getHours()).slice(-2)) + " " + (cronElements[3] === "*" ? cronElements[3] : ("0" + cronDate.getDate()).slice(-2)) + " " + (cronElements[4] === "*" ? cronElements[4] : ("0" + cronDate.getMonth()).slice(-2)) + " " + cronElements[5];
+            data.cronSchedule = cronSchedule;
+        }
+
         nowDate.setUTCDate(nowDate.getUTCDate() + 2);
         if (nowDate < cronDate) return;
     } catch (e) {
@@ -49,13 +57,16 @@ async function startCron(bot, data) {
     const job = new CronJob(data.cronSchedule, async function () {
         user.send(data.data.mess);
 
-        const nowDate = new Date();
-        const logsEmbed = new Discord.MessageEmbed()
-            .setColor('#FF9504')
-            .setTitle('Cron envoyé')
-            .setDescription("Cron envoyé à `" + user.username + "` à `" + `${nowDate.getDate()}/${nowDate.getMonth()}/${nowDate.getFullYear()} ${nowDate.getHours()}:${nowDate.getMinutes()}` + "`\n" +
-                "Message : `" + data.data.mess + "`");
-        user.send(logsEmbed);
+        if (config.idCronLogsChannel) {
+            const channel = await bot.channels.fetch(config.idCronLogsChannel);
+            const nowDate = new Date();
+            const logsEmbed = new Discord.MessageEmbed()
+                .setColor('#FF9504')
+                .setTitle('Cron envoyé')
+                .setDescription("Cron envoyé à `" + user.tag + "` à `" + `${nowDate.getDate()}/${nowDate.getMonth()}/${nowDate.getFullYear()} ${nowDate.getHours()}:${nowDate.getMinutes()}` + "`\n" +
+                    "Message : `" + data.data.mess + "`");
+            channel.send(logsEmbed);
+        }
 
         if (!data.repetitive) {
             job.stop();
