@@ -185,7 +185,7 @@ module.exports.runCmd = async (bot, channel, member, args) => {
             `à : \`${("0" + date).slice(-2)}/${("0" + month).slice(-2)}/${year} ${("0" + hours).slice(-2)}:${("0" + minutes).slice(-2)}\``);
     member.user.send(goodEmbed);
 
-    const cronSchedule = "00 " + ("0" + nowDate.getMinutes()).slice(-2) + " " + ("0" + nowDate.getHours()).slice(-2) + " " + ("0" + nowDate.getDate()).slice(-2) + " " + ("0" + nowDate.getMonth()).slice(-2) + " *";
+    const cronSchedule = "00 " + ("0" + cronDate.getUTCMinutes()).slice(-2) + " " + ("0" + cronDate.getUTCHours()).slice(-2) + " " + ("0" + cronDate.getUTCDate()).slice(-2) + " " + ("0" + cronDate.getUTCMonth()).slice(-2) + " *";
 
     const data = {
         "cronSchedule": cronSchedule,
@@ -193,7 +193,7 @@ module.exports.runCmd = async (bot, channel, member, args) => {
         "type": "MP",
         "user": member.user.id,
         "data": {
-            "year": nowDate.getFullYear(),
+            "year": cronDate.getUTCFullYear(),
             "mess": message
         }
     }
