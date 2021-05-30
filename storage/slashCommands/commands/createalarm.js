@@ -12,6 +12,8 @@ const getName = () => {
     }
 }
 
+const botInLocal = (__filename.split("/").length === 1) ? true : false;
+
 const name = getName();
 const Discord = require('discord.js');
 
@@ -185,7 +187,8 @@ module.exports.runCmd = async (bot, channel, member, args) => {
             `à : \`${("0" + date).slice(-2)}/${("0" + month).slice(-2)}/${year} ${("0" + hours).slice(-2)}:${("0" + minutes).slice(-2)}\``);
     member.user.send(goodEmbed);
 
-    const cronSchedule = "00 " + ("0" + cronDate.getUTCMinutes()).slice(-2) + " " + ("0" + cronDate.getUTCHours()).slice(-2) + " " + ("0" + cronDate.getUTCDate()).slice(-2) + " " + ("0" + cronDate.getUTCMonth()).slice(-2) + " *";
+    const hoursUTC = botInLocal ? cronDate.getUTCHours() : cronDate.getUTCHours() - 2;
+    const cronSchedule = "00 " + ("0" + cronDate.getUTCMinutes()).slice(-2) + " " + ("0" + hoursUTC).slice(-2) + " " + ("0" + cronDate.getUTCDate()).slice(-2) + " " + ("0" + cronDate.getUTCMonth()).slice(-2) + " *";
 
     const data = {
         "cronSchedule": cronSchedule,
@@ -215,7 +218,6 @@ module.exports.runCmd = async (bot, channel, member, args) => {
                 bot.cronTab.set(res.name, res.job);
                 bot.cronTab.get(res.name).start();
             }
-            console.log(res);
         });
         return;
     });
