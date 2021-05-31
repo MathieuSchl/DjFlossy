@@ -2,9 +2,9 @@ module.exports.select = async (bot, idUser, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
     bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ?? WHERE id = ?', [dbPrefix + "achievements", idUser], (error, results, fields) => {
         if (!error && results.length === 0) {
-            bot.basicFunctions.get("dbUserAchevements").insert(bot, idUser, (error, results, fields) => {
+            bot.basicFunctions.get("dbUserAchievements").insert(bot, idUser, (error, results, fields) => {
                 if (error) throw error;
-                bot.basicFunctions.get("dbUserAchevements").select(bot, idUser, callback);
+                bot.basicFunctions.get("dbUserAchievements").select(bot, idUser, callback);
             });
         } else {
             for (let index = 0; index < results.length; index++) {
