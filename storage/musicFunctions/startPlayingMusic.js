@@ -74,6 +74,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 await bot.basicFunctions.get("wait").run(videoData.videoDetails.lengthSeconds * 1100);
                 if (!dispatcher["_writableState"].ended) {
                     dispatcher.destroy();
+                    bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
                 }
 
             } catch (e) {
