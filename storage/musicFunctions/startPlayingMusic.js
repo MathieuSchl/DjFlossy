@@ -71,7 +71,8 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 });
 
                 //Security to destroy dispatcher
-                await bot.basicFunctions.get("wait").run(videoData.videoDetails.lengthSeconds * 1100);
+
+                await bot.basicFunctions.get("wait").run((parseInt(videoData.videoDetails.lengthSeconds) + 5) * 1000);
                 if (!dispatcher["_writableState"].ended) {
                     dispatcher.destroy();
                     bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
