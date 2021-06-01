@@ -92,7 +92,7 @@ function checkNewAcheivement(bot, data) {
         const title = dataTrophy.time_1D["fr"].title;
         const description = dataTrophy.time_1D["fr"].description.replace('<BOTTAG>', bot.user.username);
         sendNotification(bot, data.id, title, description);
-        data.time_1D = true;
+        data.time_1D = bot.basicFunctions.get("getDateSqlFormat").run();
     }
     return data;
 }
