@@ -48,7 +48,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 const dispatcher = connection.play(stream, streamOptions);
 
                 dispatcher.on("finish", () => {
-                    dispatcher.destroy();
+                    dispatcher.end();
                     bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
                     return;
                     //voiceChannel.leave();
@@ -60,7 +60,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     console.log("\n\n");
                     console.log(err);
 
-                    dispatcher.destroy();
+                    dispatcher.end();
                     if (!err.code) {
                         console.log("--------------");
                         console.log(songData.tagName);
@@ -70,15 +70,18 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     voiceChannel.leave();
                 });
 
-                //Security to destroy dispatcher
+                //Security to end the dispatcher
 
                 await bot.basicFunctions.get("wait").run((parseInt(videoData.videoDetails.lengthSeconds) + 10) * 1000);
-                if (!dispatcher["_writableState"].ended) {
-                    console.log("done");
-                    dispatcher.destroy();
-                    bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
-                }
 
+                bot.basicFunctions.get("dbDataSpecialGuild").select(bot, voiceChannel.guild.id, (error, results, fields) => {
+                    if (error) throw error;
+
+                    if (idSong === results[0].actualSongId) {
+                        dispatcher.end();
+                        bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
+                    }
+                })
             } catch (e) {
                 console.log("Error in startPlayingMusic");
                 console.log(e);
