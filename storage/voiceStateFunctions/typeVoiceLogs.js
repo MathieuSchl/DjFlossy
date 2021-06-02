@@ -52,7 +52,7 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                 bot.textToSpeech.get("textToSpeech").run(bot, connection, textToRead);
             });
             break;
-        case 'disconect':
+        case 'disconnect':
             bot.voiceStateFunctions.get("userVoiceUpdate").readLogs(guild, time, {
                 "actionType": "MEMBER_DISCONNECT"
             }, async (executor) => {

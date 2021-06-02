@@ -10,12 +10,20 @@ async function getUserData(bot, userId, callback) {
 
 function detectTheAction(oldState, newState) {
     if (!oldState.channel && newState.channel) return "join";
-    if (oldState.channel && !newState.channel) return "disconect";
+    if (oldState.channel && !newState.channel) return "disconnect";
     if (oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) return "move";
     if ((oldState.serverMute) === false && (newState.serverMute) === true) return "serverMute";
     if ((oldState.serverDeaf) === false && (newState.serverDeaf) === true) return "serverDeaf";
     if ((oldState.serverMute) === true && (newState.serverMute) === false) return "serverUnMute";
     if ((oldState.serverDeaf) === true && (newState.serverDeaf) === false) return "serverUnDeaf";
+    if ((oldState.selfMute) === false && (newState.selfMute) === true) return "selfMute";
+    if ((oldState.selfDeaf) === false && (newState.selfDeaf) === true) return "selfDeaf";
+    if ((oldState.selfMute) === true && (newState.selfMute) === false) return "selfUnMute";
+    if ((oldState.selfDeaf) === true && (newState.selfDeaf) === false) return "selfUnDeaf";
+    if ((oldState.selfVideo) === false && (newState.selfVideo) === true) return "startVideo";
+    if ((oldState.selfVideo) === true && (newState.selfVideo) === false) return "endVideo";
+    if ((oldState.streaming) === false && (newState.streaming) === true) return "startStreaming";
+    if ((oldState.streaming) === true && (newState.streaming) === false) return "endStreaming";
     return false;
 }
 
@@ -95,7 +103,7 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                 });
             });
             break;
-        case 'disconect':
+        case 'disconnect':
             readLogs(guild, time, {
                 "actionType": "MEMBER_DISCONNECT"
             }, async (executor) => {

@@ -140,7 +140,7 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
             if (!element[1].user.bot) updateUserDataWhenJoin(bot, element[1].user.id, actualTime);
             await bot.basicFunctions.get("wait").run(100);
         }
-    } else if ((bot.user.id === oldState.member.user.id) && (theAction === "disconect")) {
+    } else if ((bot.user.id === oldState.member.user.id) && (theAction === "disconnect")) {
         const members = Array.from(oldState.channel.members);
         for (let index = 0; index < members.length; index++) {
             const element = members[index];
@@ -150,7 +150,7 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
     } else if (theAction === "join") {
         const botIsPresent = (newState.channel.members.get(bot.user.id)) != null;
         if (botIsPresent) updateUserDataWhenJoin(bot, newState.member.user.id, actualTime);
-    } else if (theAction === "disconect") {
+    } else if (theAction === "disconnect") {
         const botIsPresent = (oldState.channel.members.get(bot.user.id)) != null;
         if (botIsPresent) updateUserDataWhenDisconnect(bot, oldState.member.user.id, actualTime);
     } else if (theAction === "move") {

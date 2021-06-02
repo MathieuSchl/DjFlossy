@@ -30,7 +30,7 @@ module.exports.selectAll = async (bot, callback) => {
 
 module.exports.update = async (bot, data, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `actionAdd` = ?, `actionRemove` = ?, `data` = ? WHERE `id` = ?", [dbPrefix + "specialGuild", JSON.stringify(data.actionAdd), JSON.stringify(data.actionRemove), JSON.stringify(data.data), data.id], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `actionAdd` = ?, `actionRemove` = ?, `actualSongId` = ?, `songsList` = ?, `data` = ? WHERE `id` = ?", [dbPrefix + "specialGuild", JSON.stringify(data.actionAdd), JSON.stringify(data.actionRemove), data.actualSongId, data.songsList, JSON.stringify(data.data), data.id], (error, results, fields) => {
         callback(error, results, fields);
         return;
     });
