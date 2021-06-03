@@ -48,7 +48,7 @@ async function addOneAchievement(bot, channel, user, embed, dataAchievement, ach
         const achievementPercent = (count / usersCount) * 100;
         const description = dataTrophy[achievementName]["fr"].description.replace('<BOTTAG>', bot.user.username) + "\n" +
             "Trophé obtenu le `" + obtainingTime + "`\n" +
-            "Rareté : `" + achievementPercent + "%`\n" +
+            "Rareté : `" + achievementPercent.toFixed(2) + "%`\n" +
             "Obtenu : `" + count + "`";
         countChar += description.length;
         embed.addField(title, description, true);
