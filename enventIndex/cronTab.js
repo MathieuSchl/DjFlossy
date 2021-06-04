@@ -55,16 +55,23 @@ async function startCron(bot, data) {
     }
 
     const job = new CronJob(data.cronSchedule, async function () {
-        user.send(data.data.mess);
+        const nowDate = new Date();
+        const mpCronEmbed = new Discord.MessageEmbed()
+            .setColor('#00C34E')
+            .setTitle('Il est l\'heure de votre rappel')
+            .setDescription(data.data.mess)
+            .setTimestamp();
+        user.send(mpCronEmbed);
 
         if (config.idCronLogsChannel) {
             const channel = await bot.channels.fetch(config.idCronLogsChannel);
-            const nowDate = new Date();
             const logsEmbed = new Discord.MessageEmbed()
                 .setColor('#FF9504')
                 .setTitle('Cron envoyé')
                 .setDescription("Cron envoyé à `" + user.tag + "` à `" + `${nowDate.getDate()}/${nowDate.getMonth()}/${nowDate.getFullYear()} ${nowDate.getHours()}:${nowDate.getMinutes()}` + "`\n" +
-                    "Message : `" + data.data.mess + "`");
+                    "Message : `" + data.data.mess + "`")
+                .setAuthor(user.tag, user.avatarURL)
+                .setTimestamp();
             channel.send(logsEmbed);
         }
 
