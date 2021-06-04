@@ -10,6 +10,13 @@ function getReactData(message) {
     return null;
 }
 
+async function realoadConn(bot, connection, voiceChannel) {
+    await connection.disconnect();
+    await bot.basicFunctions.get("wait").run(1000);
+    return await voiceChannel.join();
+}
+
+
 module.exports.addReaction = async (bot, reaction, user, messageData, index) => {
     reaction.users.remove(user.id);
 
@@ -62,12 +69,12 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                         if (guildResult.data.type === "DJ") return;
                         guildResult.data.type = "DJ";
 
-                        if (voice.connection.dispatcher) voice.connection.dispatcher.destroy();
+                        if (voice.connection.dispatcher) voice.connection.dispatcher.end();
                         const voiceChannel = voice.channel;
-                        const connection = voice.connection;
-                        bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, (error, results, fields) => {
+                        bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, async (error, results, fields) => {
                             if (error) throw error;
 
+                            const connection = await realoadConn(bot, voice.connection, voiceChannel);
                             if (voiceChannel, connection) bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
                         })
                         break;
@@ -77,8 +84,11 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                         guildResult.data.type = "VL";
 
                         if (voice.connection.dispatcher) voice.connection.dispatcher.destroy();
-                        bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, (error, results, fields) => {
+
+                        bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, async (error, results, fields) => {
                             if (error) throw error;
+
+                            await realoadConn(bot, voice.connection, voice.channel);
                         })
                         break;
 
@@ -103,8 +113,10 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                             }, (error, results, fields) => {
                                 if (error) throw error;
 
-                                bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, (error, results, fields) => {
+                                bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, async (error, results, fields) => {
                                     if (error) throw error;
+
+                                    await realoadConn(bot, voice.connection, voice.channel);
                                 })
                             })
                         })

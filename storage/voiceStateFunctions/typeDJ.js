@@ -33,6 +33,10 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                     bot.musicFunctions.get("joinVoiceChannel").run(bot, newState.channel.id);
                 });
             });
+
+            await bot.basicFunctions.get("wait").run(5000);
+            console.log("start listenner");
+            //start listenner
         } else if (!meChannelId) {
             bot.basicFunctions.get("dbDataSpecialGuild").select(bot, newState.guild.id, async (error, results, fields) => {
                 if (error) throw error;
@@ -54,13 +58,19 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                 }
             })
         } else {
-            //A user join the voiceChannel
-            if ((theaction === "join" || theaction === "move") && (newState.channelID === meChannelId) && (newCount === 2)) {
-                bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
-                    bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
-                        bot.musicFunctions.get("joinVoiceChannel").run(bot, newState.channel.id);
+            if ((theaction === "join" || theaction === "move") && (newState.channelID === meChannelId)) {
+                if (newCount === 2) {
+                    bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
+                        bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
+                            bot.musicFunctions.get("joinVoiceChannel").run(bot, newState.channel.id);
+                        });
                     });
-                });
+                }
+                if (oldState.member.user.id === bot.user.id) {
+                    await bot.basicFunctions.get("wait").run(5000);
+                    console.log("start listenner");
+                    //start listenner
+                }
             }
             //A user leave the voiceChannel
             else if ((theaction === "disconnect" || theaction === "move") && (oldState.channelID === meChannelId) && (oldCount === 1)) {
