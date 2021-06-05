@@ -27,10 +27,11 @@ module.exports.run = async (fileName, callBack) => {
             })
             .catch((err) => {
                 fs.unlinkSync(fileName);
-                //console.log(err);
+                console.log(err);
             });
     } catch (e) {
         fs.unlinkSync(fileName);
+        console.log(e);
     }
 };
 

@@ -1,4 +1,4 @@
-const discordTTS = require("discord-tts-fr");
+const googleTTS = require('google-tts-api'); // CommonJS
 
 
 async function sayText(bot, connection, broadcast) {
@@ -24,8 +24,13 @@ async function sayText(bot, connection, broadcast) {
     bot.dataBase.get("connection").exec(bot.db, 'UPDATE ?? SET `data` = ? WHERE `id` = ?', [dbPrefix + "specialGuild", JSON.stringify(result.data), guildId], async (error) => {
       if (error) throw error;
 
-      const stream = discordTTS.getVoiceStream(text);
-      const dispatcher = broadcast.play(stream, {
+      const url = googleTTS.getAudioUrl(text, {
+        lang: 'fr',
+        slow: false,
+        host: 'https://translate.google.com',
+      });
+
+      const dispatcher = broadcast.play(url, {
         "volume": 3
       });
 
