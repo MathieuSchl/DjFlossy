@@ -121,18 +121,18 @@ module.exports.addReaction = async (bot, reaction, user, messageData, index) => 
                             })
                         })
                         break;
-                }
 
+                    case "🤖":
+                        if (guildResult.data.type === "chloe") return;
+                        guildResult.data.type = "chloe";
 
-                return;
+                        if (voice.connection.dispatcher) voice.connection.dispatcher.destroy();
 
-                switch (element.embeds[0].title) {
-                    case "Liste des voiceType":
-                        emojiVoiceType = getIndex(element);
-                        break;
-                    case "Liste des serveurs":
-                        preDataChannel.messageid = element.id;
-                        preDataChannel.index = getIndex(element);
+                        bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, async (error, results, fields) => {
+                            if (error) throw error;
+
+                            await realoadConn(bot, voice.connection, voice.connection.channel);
+                        })
                         break;
                 }
             })

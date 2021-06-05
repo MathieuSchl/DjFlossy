@@ -31,7 +31,7 @@ async function sayText(bot, connection, broadcast) {
       });
 
       const dispatcher = broadcast.play(url, {
-        "volume": 3
+        "volume": 1
       });
 
       dispatcher.on("speaking", (value) => {

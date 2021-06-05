@@ -1,11 +1,64 @@
-async function checkDeafAndMute(oldState, newState) {
-    if (oldState.member.user.id === oldState.guild.client.user.id) {
-        if ((oldState.selfDeaf == null) || (oldState.selfMute == null) || (oldState.serverDeaf == null) || (oldState.serverMute == null) || (oldState.streaming == null) || (oldState.selfVideo == null)) return true;
-        if ((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute) || (newState.streaming !== oldState.streaming) || (newState.selfVideo !== oldState.selfVideo)) return false;
-        return true;
-    }
-    if (!((newState.selfDeaf !== oldState.selfDeaf) || (newState.selfMute !== oldState.selfMute) || (newState.serverDeaf !== oldState.serverDeaf) || (newState.serverMute !== oldState.serverMute) || (newState.streaming !== oldState.streaming) || (newState.selfVideo !== oldState.selfVideo))) return true;
-    return false;
+const Discord = require('discord.js');
+const dataTrophy = require('../dataTrophy.json');
+
+
+async function sendNotification(bot, idUser, trophyName, trophyDescription) {
+    const user = await bot.users.fetch(idUser);
+
+    const trophyEmbed = new Discord.MessageEmbed()
+        .setColor('#30F1AE')
+        .setTitle('Nouveau trophée obtenu')
+        .setDescription('Vous avez obtenu un nouveau trophée:\n' +
+            "Trophée : `" + trophyName + "`\n" +
+            "Descrition : `" + trophyDescription + "`")
+        .setTimestamp();
+
+    user.send(trophyEmbed);
+}
+
+async function realoadConn(bot, connection, voiceChannel) {
+    if (connection.dispatcher) connection.dispatcher.end();
+    await connection.disconnect();
+    await bot.basicFunctions.get("wait").run(1000);
+    return await voiceChannel.join();
+}
+
+async function startListener(bot, connection) {
+    if (!connection) return;
+    bot.textToSpeech.get("listener").run(bot, connection, (voiceMessage, user) => {
+        const idUser =user.id;
+        const words = voiceMessage.split(" ");
+        if (words.length !== 2) return;
+        if (words[1].toLowerCase() !== "chloé") return;
+
+        bot.basicFunctions.get("dbDataSpecialGuild").select(bot, connection.channel.guild.id, async (error, results, fields) => {
+            if (error) throw error;
+            if (results.length === 0) return;
+
+            const guildResult = results[0];
+            guildResult.data.type = "chloe";
+
+            bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, async (error, results, fields) => {
+                if (error) throw error;
+
+                const newConnection = await realoadConn(bot, connection, connection.channel);
+
+                bot.basicFunctions.get("dbUserAchievements").select(bot, idUser, (error, results, fields) => {
+                    if (error) throw error;
+                    const result = results[0];
+                    if (result.easterEgg_Chloe == null) {
+                        const title = dataTrophy.easterEgg_Chloe["fr"].title.replace('<BOTTAG>', bot.user.username);
+                        const description = dataTrophy.easterEgg_Chloe["fr"].description.replace('<BOTTAG>', bot.user.username);
+                        result.easterEgg_Chloe = bot.basicFunctions.get("getDateSqlFormat").run();
+                        sendNotification(bot, idUser, title, description);
+                        bot.basicFunctions.get("dbUserAchievements").update(bot,result,(error, results, fields)=>{
+                            if (error) throw error;
+                        })
+                    }
+                });
+            })
+        })
+    })
 }
 
 module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDatavoiceChannel) => {
@@ -35,8 +88,8 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
             });
 
             await bot.basicFunctions.get("wait").run(5000);
-            console.log("start listenner");
             //start listenner
+            startListener(bot, newState.guild.me.voice.connection);
         } else if (!meChannelId) {
             bot.basicFunctions.get("dbDataSpecialGuild").select(bot, newState.guild.id, async (error, results, fields) => {
                 if (error) throw error;
@@ -68,8 +121,8 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                 }
                 if (oldState.member.user.id === bot.user.id) {
                     await bot.basicFunctions.get("wait").run(5000);
-                    console.log("start listenner");
                     //start listenner
+                    startListener(bot, newState.guild.me.voice.connection);
                 }
             }
             //A user leave the voiceChannel
@@ -97,31 +150,6 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
         }
 
         return;
-
-
-
-        const botChannelId = oldState.guild.me.voice.channel.id;
-        if (botChannelId === (oldState.channel ? oldState.channel.id : null) || botChannelId === (newState.channel ? newState.channel.id : null)) {
-            if ((oldState.member.user.id === bot.user.id) && oldState.channel && newState.channel && (oldState.channel.id !== newState.channel.id)) {
-                if (newCount > 1) {
-                    bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
-                        bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
-                            bot.musicFunctions.get("joinVoiceChannel").run(bot, newState.channel.id);
-                        });
-                    });
-                }
-            } else {
-                if (oldCount === 1 || newCount === 2) {
-                    if (await checkDeafAndMute(oldState, newState)) {
-                        bot.musicFunctions.get("startBotMusicInGuilds").one(bot, oldState.guild.id, (error, results, fields) => {
-                            bot.musicFunctions.get("createPlaylist").run(bot, oldState.guild.id, () => {
-                                if (oldState.guild.me.voice.channel) bot.musicFunctions.get("joinVoiceChannel").run(bot, oldState.guild.me.voice.channel.id);
-                            });
-                        });
-                    }
-                }
-            }
-        }
     } catch {}
     if (oldDatavoiceChannel) {
         try {

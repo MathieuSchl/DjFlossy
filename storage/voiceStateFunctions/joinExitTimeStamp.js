@@ -161,7 +161,7 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
         } else if (botIsPresentInNewChannel) {
             updateUserDataWhenJoin(bot, newState.member.user.id, actualTime);
         } else {
-            console.log("error user does not leave or join the voice channel");
+            //console.log("error user does not leave or join the voice channel");
         }
     }
 };

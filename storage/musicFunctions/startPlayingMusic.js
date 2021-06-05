@@ -35,9 +35,8 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     return;
                 }
 
-
                 const streamOptions = {
-                    volume: songData.volume
+                    volume: songData.volume * 0.08
                 };
                 const videoData = await ytdl.getInfo(songData.tagName);
                 const stream = ytdl(songData.tagName, {
