@@ -40,7 +40,6 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                 bot.textToSpeech.get("textToSpeech").run(bot, connection, textToRead);
             });
             break;
-
         case 'serverUnDeaf':
             bot.voiceStateFunctions.get("userVoiceUpdate").readLogs(guild, time, {
                 "actionType": "MEMBER_UPDATE",
@@ -51,6 +50,47 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
                 const textToRead = `${executorName} a rétabli le son de ${targetName}`;
                 bot.textToSpeech.get("textToSpeech").run(bot, connection, textToRead);
             });
+            break;
+        case 'selfMute':
+            const selfMuteUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const selfMuteText = `${selfMuteUserName} a coupé son micro`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, selfMuteText);
+            break;
+        case 'selfUnMute':
+            const selfUnMuteUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const selfUnMuteText = `${selfUnMuteUserName} a réactivé son micro`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, selfUnMuteText);
+            break;
+        case 'selfDeaf':
+            const selfDeafUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const selfDeafText = `${selfDeafUserName} a coupé son casque`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, selfDeafText);
+            break;
+        case 'selfUnDeaf':
+            const selfUnDeafUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const selfUnDeafText = `${selfUnDeafUserName} a réactivé son casque`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, selfUnDeafText);
+            break;
+        case 'startVideo':
+            const startVideoUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const startVideoText = `${startVideoUserName} a activé sa caméra`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, startVideoText);
+            break;
+        case 'endVideo':
+            const endVideoUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const endVideoText = `${endVideoUserName} a coupé sa caméra`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, endVideoText);
+            break;
+        case 'startStreaming':
+            const startStreamingUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const voiceChannelName = newState.channel.name;
+            const startStreamingText = `${startStreamingUserName} a démarré un stream dans le channel ${voiceChannelName}`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, startStreamingText);
+            break;
+        case 'endStreaming':
+            const endStreamingUserName = newState.member.nickname ? newState.member.nickname : newState.member.user.username;
+            const endStreamingText = `${endStreamingUserName} a arrêté son stream`;
+            bot.textToSpeech.get("textToSpeech").run(bot, connection, endStreamingText);
             break;
         case 'disconnect':
             bot.voiceStateFunctions.get("userVoiceUpdate").readLogs(guild, time, {
@@ -81,7 +121,7 @@ module.exports.run = async (bot, oldState, newState, oldDatavoiceChannel, newDat
             });
             break;
         default:
-            const textToRead = `Cette action n'a pas été reconnu`;
+            //console.log(theAction);
             return;
     }
 };
