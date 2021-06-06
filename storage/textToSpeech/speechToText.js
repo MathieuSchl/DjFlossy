@@ -5,6 +5,7 @@ const witClient = require('node-witai-speech');
 
 module.exports.run = async (fileName, callBack) => {
     try {
+        if (!fs.existsSync(fileName)) return;
         var stream = fs.createReadStream(fileName);
 
         // The content-type for this audio stream (audio/wav, ...)
@@ -27,11 +28,11 @@ module.exports.run = async (fileName, callBack) => {
             })
             .catch((err) => {
                 fs.unlinkSync(fileName);
-                console.log(err);
+                //console.log(err);
             });
     } catch (e) {
         fs.unlinkSync(fileName);
-        console.log(e);
+        //console.log(e);
     }
 };
 
