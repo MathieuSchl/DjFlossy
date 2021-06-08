@@ -3,7 +3,7 @@ const config = require('../config.json');
 const witClient = require('node-witai-speech');
 const minDuration = 0.7;
 const maxDuration = 5.0;
-const FileWriter  = require('wav').FileWriter;
+const FileWriter = require('wav').FileWriter;
 
 
 function makeid(length) {
@@ -103,6 +103,7 @@ module.exports.run = async (bot, connection, callBack) => {
             let new_buffer = await convert_audio(await convert_audio(buffer));
 
             outputFileStream.write(new_buffer);
+            await bot.basicFunctions.get("wait").run(duration * 10);
 
             outputFileStream.end();
 
