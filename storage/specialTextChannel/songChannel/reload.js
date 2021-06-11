@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const convertEmoji = require("../../../../../dataBase/convertEmoji.json");
+const convertEmoji = require("../../dataBase/convertEmoji.json");
 
 
 function testIfIsEmojis(string) {

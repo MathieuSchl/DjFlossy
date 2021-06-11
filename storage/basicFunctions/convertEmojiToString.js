@@ -1,4 +1,4 @@
-const convertEmoji = require("../../../../dataBase/convertEmoji.json");
+const convertEmoji = require("../dataBase/convertEmoji.json");
 const convertEmojiKeyList = Object.keys(convertEmoji);
 const convertEmojiValueList = Object.values(convertEmoji);
 

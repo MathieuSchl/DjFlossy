@@ -3,7 +3,7 @@ function testIfIsEmojis(string) {
     return (string.replace(regex, '') !== string);
 }
 
-convertEmoji = require("../../../../dataBase/convertEmoji.json");
+convertEmoji = require("../dataBase/convertEmoji.json");
 
 module.exports.select = async (bot, idChannel, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
