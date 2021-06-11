@@ -17,8 +17,6 @@ module.exports.run = async (bot) => {
 
         bot.specialTextChannel["console"].get("reloadConsole").run(bot);
 
-        bot.basicFunctions.get("DbConfiguration").verifyTable(bot);
-
         //bot.basicFunctions.get("checkMessageReactions").run(bot);
 
         bot.musicFunctions.get("startBotMusicInGuilds").run(bot);
