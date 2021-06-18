@@ -1,8 +1,4 @@
 const config = require("../storage/config.json");
-const fs = require("fs");
-const pathSpecialMessages = config.location + "/storage/data/specialMessageList/";
-const pathSpecialGuilds = config.location + "/storage/data/specialGuild/";
-const pathSpecialVoiceChannels = config.location + "/storage/data/specialVoiceChannelList/";
 
 module.exports.run = async (bot) => {
     const allGuilds = bot.guilds.cache.array();
@@ -18,7 +14,7 @@ module.exports.run = async (bot) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
     await bot.basicFunctions.get("wait").run(3000);
 
-    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ??', [dbPrefix + "specialTextChannel"], async (error, results, fields) => {
+    bot.basicFunctions.get("dbDataSpecialTextChannel").selectAll(bot, async (error, results, fields) => {
         if (error) throw error;
 
         for (let index = 0; index < results.length; index++) {
@@ -35,7 +31,7 @@ module.exports.run = async (bot) => {
 
     await bot.basicFunctions.get("wait").run(3000);
 
-    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ??', [dbPrefix + "specialMessage"], async (error, results, fields) => {
+    bot.basicFunctions.get("dbDataSpecialMessage").selectAll(bot, async (error, results, fields) => {
         if (error) throw error;
 
         for (let i = 0; i < results.length; i++) {
@@ -57,7 +53,7 @@ module.exports.run = async (bot) => {
 
     await bot.basicFunctions.get("wait").run(3000);
 
-    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ??', [dbPrefix + "specialGuild"], async (error, results, fields) => {
+    bot.basicFunctions.get("dbDataSpecialGuild").selectAll(bot, async (error, results, fields) => {
         if (error) throw error;
 
         for (let i = 0; i < results.length; i++) {
@@ -74,7 +70,7 @@ module.exports.run = async (bot) => {
 
     await bot.basicFunctions.get("wait").run(3000);
 
-    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ??', [dbPrefix + "specialVoiceChannel"], async (error, results, fields) => {
+    bot.basicFunctions.get("dbDataSpecialVoiceChannel").selectAll(bot, async (error, results, fields) => {
         if (error) throw error;
 
         for (let i = 0; i < results.length; i++) {

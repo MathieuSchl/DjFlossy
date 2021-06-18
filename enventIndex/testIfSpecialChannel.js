@@ -1,8 +1,7 @@
-
 module.exports.run = async (bot, message, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
 
-    bot.dataBase.get("connection").exec(bot.db,'SELECT * FROM ?? WHERE id = ?', [dbPrefix + "specialTextChannel", message.channel.id], (error, results, fields) => {
+    bot.basicFunctions.get("dbDataSpecialTextChannel").select(bot, message.channel.id, (error, results, fields) => {
         if (error) throw error;
 
         if (results.length === 0) {

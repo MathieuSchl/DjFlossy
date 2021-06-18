@@ -69,7 +69,7 @@ function getQuery(tableName) {
     return;
 }
 
-module.exports.createTable = (dbPrefix, tableName) => {
+module.exports.createTable = (dbPrefix, tableName, callback) => {
     if (dbPrefix == null) throw new Error("'dbPrefix' is not undifined");
     if (tableName == null) throw new Error("'tableName' is not undifined");
 
@@ -89,6 +89,7 @@ module.exports.createTable = (dbPrefix, tableName) => {
             console.log("Table \"" + dbPrefix + tableName + "\" has been created");
 
             db.end();
+            if(callback) callback();
             return;
         });
 
