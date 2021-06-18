@@ -4,7 +4,7 @@ module.exports.run = async (bot, location, callback) => {
     let allGood = true;
 
     //check if the config file is good
-    if (!fs.existsSync(location + "/storage/config.json")) {
+    if (!fs.existsSync(location + "storage/config.json")) {
         allGood = false;
         const config = {
             "token": "YourTockenHere",
@@ -12,12 +12,12 @@ module.exports.run = async (bot, location, callback) => {
             "location": location
         };
         const data = JSON.stringify(config);
-        fs.writeFileSync(location + "/storage/config.json", data);
+        fs.writeFileSync(location + "storage/config.json", data);
         console.log("The config file as been created here\n" +
             location + "storage/config.json\n" +
             "Please put your Discord bot tocken and your prefix\n");
     } else {
-        fichiers = fs.readFileSync(location + "/storage/config.json");
+        fichiers = fs.readFileSync(location + "storage/config.json");
         const config = JSON.parse(fichiers);
         if (config.token === "YourTockenHere") {
             allGood = false;
@@ -35,14 +35,14 @@ module.exports.run = async (bot, location, callback) => {
             allGood = false;
             config.location = location;
             let data = JSON.stringify(config);
-            fs.writeFileSync(location + "/storage/config.json", data);
+            fs.writeFileSync(location + "storage/config.json", data);
             console.log("The path of the bot as been updated");
         }
     }
 
 
     //check if the database config file is good
-    if (!fs.existsSync(location + "/storage/dataBase/dbConfig.json")) {
+    if (!fs.existsSync(location + "storage/dataBase/dbConfig.json")) {
         allGood = false;
         const dbConfig = {
             "host": "hostHere",
@@ -51,12 +51,12 @@ module.exports.run = async (bot, location, callback) => {
             "database": "databaseHere"
         };
         const data = JSON.stringify(dbConfig);
-        fs.writeFileSync(location + "/storage/dataBase/dbConfig.json", data);
+        fs.writeFileSync(location + "storage/dataBase/dbConfig.json", data);
         console.log("The dbconfig file as been created here\n" +
             location + "storage/dataBase/dbConfig.json\n" +
             "Please set your db information for the connection\n");
     } else {
-        fichiers = fs.readFileSync(location + "/storage/dataBase/dbConfig.json");
+        fichiers = fs.readFileSync(location + "storage/dataBase/dbConfig.json");
         const config = JSON.parse(fichiers);
         if (config.host === "hostHere") {
             allGood = false;
@@ -85,7 +85,7 @@ module.exports.run = async (bot, location, callback) => {
     }
 
     //check if data folder exist
-    if (!fs.existsSync(location + "/storage/data")) fs.mkdirSync(location + "/storage/data");
+    if (!fs.existsSync(location + "storage/data")) fs.mkdirSync(location + "storage/data");
 
     if (allGood) {
         callback();
