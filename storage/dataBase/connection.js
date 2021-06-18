@@ -70,8 +70,8 @@ function getQuery(tableName) {
 }
 
 module.exports.createTable = (dbPrefix, tableName, callback) => {
-    if (dbPrefix == null) throw new Error("'dbPrefix' is not undifined");
-    if (tableName == null) throw new Error("'tableName' is not undifined");
+    if (dbPrefix == null) throw new Error("'dbPrefix' is undefined");
+    if (tableName == null) throw new Error("'tableName' is undefined");
 
     const db = getDb();
 
