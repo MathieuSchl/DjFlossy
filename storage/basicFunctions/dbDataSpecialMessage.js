@@ -5,6 +5,31 @@ function testIfIsEmojis(string) {
     return (string.replace(regex, '') !== string);
 }
 
+module.exports.selectAll = async (bot, callback) => {
+    const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
+    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ??', [dbPrefix + "specialMessage"], (error, results, fields) => {
+        if (error && error.code === "ER_NO_SUCH_TABLE") {
+            bot.dataBase.get("connection").createTable(dbPrefix, "specialMessage", () => {
+                bot.basicFunctions.get("dbDataSpecialMessage").selectAll(bot, callback);
+            });
+            return;
+        }
+        for (let index = 0; index < results.length; index++) {
+            const element = results[index];
+            element.emoji = JSON.parse(element.emoji);
+            for (let emojiIndex = 0; emojiIndex < element.emoji.length; emojiIndex++) {
+                let theEmoji = element.emoji[emojiIndex];
+                if (!testIfIsEmojis(theEmoji)) element.emoji[emojiIndex] = convertEmoji[theEmoji];
+                if (!element.emoji[emojiIndex]) console.log("Emoji " + element.emoji[emojiIndex] + " is unknown");
+            }
+            element.type = JSON.parse(element.type);
+            element.data = JSON.parse(element.data);
+        }
+        callback(error, results, fields);
+        return;
+    });
+};
+
 module.exports.select = async (bot, idChannel, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
     bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ?? WHERE id = ?', [dbPrefix + "specialMessage", idChannel], (error, results, fields) => {
