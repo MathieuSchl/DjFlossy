@@ -136,7 +136,7 @@ bot.on('debug', (info) => {
 
 
 async function start() {
-    const whereAmI = __dirname + "\\";
+    const whereAmI = __dirname + "/";
     require("./storage/basicFunctions/checkFiles").run(bot, whereAmI, async () => {
         try {
             await require("./enventIndex/scanCommands.js").run(bot);
