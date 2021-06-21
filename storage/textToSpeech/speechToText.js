@@ -10,7 +10,9 @@ async function wait(ms) {
 module.exports.run = async (fileName, callBack) => {
     try {
         if (!fs.existsSync(fileName)) return;
+        //create an error if the file cant be read
         fs.readFileSync(fileName);
+        //if the file cant be read this command crash the bot
         var stream = fs.createReadStream(fileName);
 
         // The content-type for this audio stream (audio/wav, ...)
