@@ -3,6 +3,10 @@ const config = require('../config.json');
 const witClient = require('node-witai-speech');
 
 
+async function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 module.exports.run = async (fileName, callBack) => {
     try {
         if (!fs.existsSync(fileName)) return;
@@ -24,6 +28,7 @@ module.exports.run = async (fileName, callBack) => {
         // check in the promise for the completion of call to witai
         parseSpeech.then((data) => {
                 fs.unlinkSync(fileName);
+                console.log("good");
                 if (data.text) callBack(data.text);
             })
             .catch((err) => {
@@ -31,6 +36,7 @@ module.exports.run = async (fileName, callBack) => {
                 //console.log(err);
             });
     } catch (e) {
+        await wait(250);
         fs.unlinkSync(fileName);
         //console.log(e);
     }
