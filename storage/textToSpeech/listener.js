@@ -103,7 +103,7 @@ module.exports.run = async (bot, connection, callBack) => {
             let new_buffer = await convert_audio(await convert_audio(buffer));
 
             outputFileStream.write(new_buffer);
-            await bot.basicFunctions.get("wait").run(duration * 10);
+            await bot.basicFunctions.get("wait").run(duration * 25);
 
             outputFileStream.end();
 
