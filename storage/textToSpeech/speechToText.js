@@ -10,6 +10,7 @@ async function wait(ms) {
 module.exports.run = async (fileName, callBack) => {
     try {
         if (!fs.existsSync(fileName)) return;
+        fs.readFileSync(fileName);
         var stream = fs.createReadStream(fileName);
 
         // The content-type for this audio stream (audio/wav, ...)
@@ -28,7 +29,6 @@ module.exports.run = async (fileName, callBack) => {
         // check in the promise for the completion of call to witai
         parseSpeech.then((data) => {
                 fs.unlinkSync(fileName);
-                console.log("good");
                 if (data.text) callBack(data.text);
             })
             .catch((err) => {
