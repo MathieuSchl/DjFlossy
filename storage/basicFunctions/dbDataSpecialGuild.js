@@ -46,7 +46,7 @@ module.exports.selectAll = async (bot, callback) => {
 
 module.exports.update = async (bot, data, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `actionAdd` = ?, `actionRemove` = ?, `data` = ? WHERE `id` = ?", [dbPrefix + "specialGuild", JSON.stringify(data.actionAdd), JSON.stringify(data.actionRemove), JSON.stringify(data.slashCommands), JSON.stringify(data.data), data.id], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, "UPDATE ?? SET `actionAdd` = ?, `actionRemove` = ?, `slashCommands` = ? , `data` = ? WHERE `id` = ?", [dbPrefix + "specialGuild", JSON.stringify(data.actionAdd), JSON.stringify(data.actionRemove), JSON.stringify(data.slashCommands), JSON.stringify(data.data), data.id], (error, results, fields) => {
         if (error && error.code === "ER_NO_SUCH_TABLE") {
             bot.dataBase.get("connection").createTable(dbPrefix, "specialGuild", () => {
                 bot.basicFunctions.get("dbDataSpecialGuild").update(bot, callback);
@@ -60,7 +60,7 @@ module.exports.update = async (bot, data, callback) => {
 
 module.exports.insert = async (bot, data, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
-    bot.dataBase.get("connection").exec(bot.db, "INSERT INTO ?? (`id`, `actionAdd`, `actionRemove`, `data`) VALUES (?, ?, ?, ?)", [dbPrefix + "specialGuild", data.id, JSON.stringify(data.actionAdd), JSON.stringify(data.actionRemove), JSON.stringify(data.slashCommands), JSON.stringify(data.data)], (error, results, fields) => {
+    bot.dataBase.get("connection").exec(bot.db, "INSERT INTO ?? (`id`, `actionAdd`, `actionRemove`, `slashCommands`, `data`) VALUES (?, ?, ?, ?, ?)", [dbPrefix + "specialGuild", data.id, JSON.stringify(data.actionAdd), JSON.stringify(data.actionRemove), JSON.stringify(data.slashCommands), JSON.stringify(data.data)], (error, results, fields) => {
         if (error && error.code === "ER_NO_SUCH_TABLE") {
             bot.dataBase.get("connection").createTable(dbPrefix, "specialGuild", () => {
                 bot.basicFunctions.get("dbDataSpecialGuild").insert(bot, callback);
