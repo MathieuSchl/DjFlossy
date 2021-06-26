@@ -9,7 +9,6 @@ module.exports.run = async (bot, message, callback) => {
             return;
         }
 
-        results.map(element => element.data = JSON.parse(element.data));
         dataSpecialChannel = results[0];
         bot["specialTextChannel"][dataSpecialChannel.type].get("index").run(bot, message, dataSpecialChannel);
         callback(true);

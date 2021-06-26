@@ -32,6 +32,7 @@ module.exports.selectAll = async (bot, callback) => {
             });
             return;
         }
+        results.map(element => element.data = JSON.parse(element.data));
         callback(error, results, fields);
         return;
     });
@@ -46,6 +47,7 @@ module.exports.select = async (bot, idChannel, callback) => {
             });
             return;
         }
+        results.map(element => element.data = JSON.parse(element.data));
         callback(error, results, fields);
         return;
     });
