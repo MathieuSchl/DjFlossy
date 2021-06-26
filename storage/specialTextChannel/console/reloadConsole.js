@@ -10,7 +10,10 @@ module.exports.run = async (bot) => {
     await bot.basicFunctions.get("deleteAll").run(bot, channel);
 
     fs.readFile(path, 'utf8', function (err, data) {
-        if (err) throw err;
+        if (err) {
+            channel.send("The console file does not exist");
+            return;
+        }
 
         const dataSplit = data.split("\n");
         let msg = "";
@@ -20,7 +23,7 @@ module.exports.run = async (bot) => {
                 msg = msg + element + "\n";
             } else {
                 channel.send("```\n" + msg + "```");
-                msg = element;
+                msg = element + "\n";
             }
         }
         channel.send("```\n" + msg + "```");
