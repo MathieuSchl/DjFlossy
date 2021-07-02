@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 const config = require('../storage/config.json');
-const banFolder = ["data", "specialGuilds", "specialTextChannel", "specialVoiceChannels", "channelSpecial", "messageSpecial"];
+const banFolder = ["data", "specialGuilds", "specialTextChannel", "specialVoiceChannels", "channelSpecial", "messageSpecial", "buttons"];
 
 function scanFolder(bot, path) {
     let folderName = path.split("/");
@@ -91,6 +91,18 @@ module.exports.run = async (bot) => {
             for (let i = 0; i < folders.length; i++) {
                 if (await fs.lstatSync(config.location + "/storage/specialGuilds/" + folders[i]).isDirectory()) {
                     await scanFolder(bot["specialGuilds"], config.location + "/storage/specialGuilds/" + folders[i] + "/");
+                }
+            }
+        }
+        return;
+    });
+
+    await fs.readdir(config.location + "/storage/buttons", async (err, folders) => {
+        if (folders.length !== 0) {
+            bot["buttons"] = {};
+            for (let i = 0; i < folders.length; i++) {
+                if (await fs.lstatSync(config.location + "/storage/buttons/" + folders[i]).isDirectory()) {
+                    await scanFolder(bot["buttons"], config.location + "/storage/buttons/" + folders[i] + "/");
                 }
             }
         }

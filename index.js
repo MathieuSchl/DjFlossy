@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
-const fs = require("fs");
 const bot = new Discord.Client();
+require('discord-buttons')(bot);
 
 
 bot.on("ready", async () => {
@@ -36,6 +36,16 @@ bot.on("messageReactionAdd", (reaction, user) => {
 bot.on("messageReactionRemove", (reaction, user) => {
     try {
         bot.enventIndex.get("reactions").removeReaction(bot, reaction, user);
+    } catch (e) {
+        console.log("Error in the messageReactionRemove event\n---------\n");
+        console.log(e);
+        console.log("\n\n")
+    }
+});
+
+bot.on('clickButton', async (button) => {
+    try {
+        bot.enventIndex.get("clickButton").run(bot, button);
     } catch (e) {
         console.log("Error in the messageReactionRemove event\n---------\n");
         console.log(e);
