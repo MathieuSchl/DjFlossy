@@ -1,6 +1,37 @@
+const config = require("../config.json")
 var CronJob = require('cron').CronJob;
+const Discord = require('discord.js');
 const name = "addSongFromPlayList"; //Set name here
+const ytdl = require("ytdl-core");
+const ytch = require('yt-channel-info')
 
+
+async function testChannelInfo(authorId) {
+    try {
+        await ytch.getChannelInfo(authorId);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+async function sendMusicsInfo(bot, channel, tagName) {
+    const ytInfo = await ytdl.getInfo(tagName);
+
+    const URL = ytInfo.videoDetails.video_url;
+    const avatarURL = await testChannelInfo(ytInfo.videoDetails.author.id) ? (await ytch.getChannelInfo(ytInfo.videoDetails.author.id)).authorThumbnails[2].url : null;
+
+    const musicEmbed = new Discord.MessageEmbed()
+        .setColor('#FF0000')
+        .setTitle(ytInfo.videoDetails.title)
+        .setURL(URL)
+        .setAuthor(ytInfo.videoDetails.author.name, avatarURL, ytInfo.videoDetails.author.channel_url)
+        .setImage(ytInfo.videoDetails.thumbnails[2].url)
+        .setTimestamp()
+        .setFooter(bot.user.username, await bot.user.avatarURL());
+
+    channel.send(musicEmbed)
+}
 
 async function addSong(bot, musicTag, playlists) {
     bot.dataBase.get("connection").exec(bot.db, 'SELECT 1 FROM ?? WHERE `tagName` = ?', ["musicsList", musicTag], (error, results, fields) => {
@@ -10,8 +41,11 @@ async function addSong(bot, musicTag, playlists) {
             bot.dataBase.get("connection").exec(bot.db, 'INSERT INTO ?? (`tagName`) VALUE (?)', ["musicsList", musicTag], (error, results, fields) => {
                 if (error) throw error;
 
-                bot.dataBase.get("connection").exec(bot.db, 'SELECT `id` FROM ?? WHERE `tagName` = ?', ["musicsList", musicTag], (error, results, fields) => {
+                bot.dataBase.get("connection").exec(bot.db, 'SELECT `id` FROM ?? WHERE `tagName` = ?', ["musicsList", musicTag], async (error, results, fields) => {
                     if (error) throw error;
+
+                    const channel = await bot.channels.fetch(config.idNewSongsChannel);config
+                    sendMusicsInfo(bot, channel, musicTag)
 
                     const idMusic = results[0].id;
                     playlists.forEach(element => {
@@ -26,7 +60,6 @@ async function addSong(bot, musicTag, playlists) {
 }
 
 module.exports.run = async (bot) => {
-
     //modify tour cron here
 
     const job = new CronJob('0 30 05 * * *', async function () {
@@ -37,7 +70,7 @@ module.exports.run = async (bot) => {
                 results.forEach(async (element) => {
                     const playListTag = element.playListTag;
                     const playlist = JSON.parse(element.playlist);
-    
+
                     bot.basicFunctions.get("getVideosFromYtPlaylist").run(playListTag, async (playListTags) => {
                         //const theLastXMusics = playListData.videos.length;
                         const theLastXMusics = 3;
@@ -55,7 +88,6 @@ module.exports.run = async (bot) => {
     });
 
     //Stop
-
 
     return {
         "name": name,
