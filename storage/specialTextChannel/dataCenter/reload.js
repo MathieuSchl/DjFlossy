@@ -5,8 +5,8 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
     const channel = message.channel;
     bot.basicFunctions.get("deleteAll").run(bot, channel);
 
-    emojiList = ["👋", "ℹ️", "💣", "🎵"];
-    typeList = ["ping", "speedTest", "destroy", "reloadAllSongsChannels"];
+    emojiList = ["👋", "ℹ️", "💣", "🎵", "❓"];
+    typeList = ["ping", "speedTest", "destroy", "reloadAllSongsChannels", "getUsers"];
     const commandsEmbed = new Discord.MessageEmbed();
     commandsEmbed.setColor("#FF9600");
     commandsEmbed.setTitle('Liste des commandes')
@@ -14,7 +14,8 @@ module.exports.run = async (bot, message, dataSpecialChannel) => {
         "👋 => Permets de ping le bot\n" +
         "ℹ️ => Permets de faire un test de vitesse\n" +
         "💣 => Permets d'éteindre le bot\n" +
-        "🎵 => Permets de reload tous les `songsChannel`")
+        "🎵 => Permets de reload tous les `songsChannel`\n" +
+        "❓ => Permets de voir les utilisateurs qui utilise <@" + bot.user + ">")
     channel.send(commandsEmbed).then(async (msg) => {
         for (let index = 0; index < emojiList.length; index++) {
             msg.react(emojiList[index]);

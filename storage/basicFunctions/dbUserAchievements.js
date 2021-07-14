@@ -16,6 +16,17 @@ module.exports.select = async (bot, idUser, callback) => {
     });
 };
 
+module.exports.selectAll = async (bot, callback) => {
+    const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
+    bot.dataBase.get("connection").exec(bot.db, 'SELECT * FROM ??', [dbPrefix + "achievements"], (error, results, fields) => {
+        for (let index = 0; index < results.length; index++) {
+            results[index].data = JSON.parse(results[index].data);
+        }
+        callback(error, results, fields);
+        return;
+    });
+};
+
 module.exports.update = async (bot, data, callback) => {
     const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
     let query = "UPDATE ?? SET `data` = ?";
@@ -28,7 +39,7 @@ module.exports.update = async (bot, data, callback) => {
     for (let index = 0; index < keys.length; index++) {
         const element = keys[index];
         const value = data[element];
-        query=query+", `"+element+"` = ?";
+        query = query + ", `" + element + "` = ?";
         options.push(value);
     }
 
