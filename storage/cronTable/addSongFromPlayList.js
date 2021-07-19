@@ -28,7 +28,7 @@ async function sendMusicsInfo(bot, channel, tagName, playlists) {
         .setAuthor(ytInfo.videoDetails.author.name, avatarURL, ytInfo.videoDetails.author.channel_url)
         .setImage(ytInfo.videoDetails.thumbnails[2].url)
         .setTimestamp()
-        .setFooter(bot.user.username, await bot.user.avatarURL());
+        .setFooter(bot.user.tag, await bot.user.avatarURL());
 
     await new Promise(async (resolve) => {
         if (playlists == null || playlists.length === 0) {
