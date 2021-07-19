@@ -12,6 +12,7 @@ async function realoadChannel(bot, channel) {
     bot.dataBase.get("connection").exec(bot.db, 'SELECT data FROM ?? WHERE id = ?', [dbPrefix + "specialGuild", channel.guild.id], (error, results, fields) => {
         if (error) throw error;
 
+
         let query = 'SELECT name,emoji FROM ?? WHERE `enable` = ?';
         const playListsBonus = JSON.parse(results[0].data).playListsBonus ? JSON.parse(results[0].data).playListsBonus : [];
         for (let index = 0; index < playListsBonus.length; index++) {
@@ -27,10 +28,6 @@ async function realoadChannel(bot, channel) {
                 results[index].emoji;
                 if (!testIfIsEmojis(results[index].emoji)) results[index].emoji = convertEmoji[results[index].emoji];
                 playList.push(results[index]);
-            }
-
-            for (let index = 0; index < results.length; index++) {
-
             }
 
             //delete all message in the channel
@@ -77,7 +74,7 @@ async function realoadChannel(bot, channel) {
                     commandsEmbed.setTitle('Liste des commandes')
                     commandsEmbed.setDescription("Cliquez sur les réactions pour faire l'action correspondante:\n\n" +
                         "🔽 => Permets de déplacer le bot dans le salon vocal actuel\n" +
-                        "⏭️ => Permets de passer à la musique suivante\n"+
+                        "⏭️ => Permets de passer à la musique suivante\n" +
                         "❓  => Donne les informations de la musique en cour")
                     channel.send(commandsEmbed).then(async (msg) => {
                         for (let index = 0; index < emojiList.length; index++) {
