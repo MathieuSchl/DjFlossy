@@ -70,7 +70,7 @@ function getQuery(tableName) {
 }
 
 module.exports.createTable = (dbPrefix, tableName, callback) => {
-    if (dbPrefix == null) throw new Error("'dbPrefix' is undefined");
+    if (dbPrefix == null) dbPrefix = "";
     if (tableName == null) throw new Error("'tableName' is undefined");
 
     const db = getDb();
@@ -89,7 +89,7 @@ module.exports.createTable = (dbPrefix, tableName, callback) => {
             console.log("Table \"" + dbPrefix + tableName + "\" has been created");
 
             db.end();
-            if(callback) callback();
+            if (callback) callback();
             return;
         });
 
