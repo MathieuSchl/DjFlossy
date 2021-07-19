@@ -4,7 +4,7 @@
     "specialMessage": "CREATE TABLE ??.?? ( `id` VARCHAR(18) NOT NULL , `channel` VARCHAR(18) NOT NULL , `emoji` VARCHAR(50) NOT NULL DEFAULT '[]' , `type` VARCHAR(100) NOT NULL DEFAULT '[]' , `data` VARCHAR(1000) NOT NULL DEFAULT '{}' , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
     "specialVoiceChannel": "CREATE TABLE ??.?? ( `id` VARCHAR(18) NOT NULL , `type` VARCHAR(25) NOT NULL , `data` VARCHAR(1000) NOT NULL DEFAULT '{}' , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
     "userData": "CREATE TABLE ??.?? ( `id` VARCHAR(37) NOT NULL , `admin` BOOLEAN NOT NULL DEFAULT FALSE , `muteShield` BOOLEAN NOT NULL DEFAULT FALSE , `deafShield` BOOLEAN NOT NULL DEFAULT FALSE , `disconnectShield` BOOLEAN NOT NULL DEFAULT FALSE , `data` VARCHAR(500) NOT NULL DEFAULT '{}' , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
-    "musicTag": "CREATE TABLE ??.`musicTag` ( `id` INT(3) NOT NULL AUTO_INCREMENT , `name` VARCHAR(25) NOT NULL , `emoji` VARCHAR(10) NOT NULL , `enable` BOOLEAN NOT NULL DEFAULT TRUE , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
-    "musicsList": "CREATE TABLE ??.`musicsList` ( `id` INT(6) NOT NULL AUTO_INCREMENT , `tagName` VARCHAR(12) NOT NULL , `volume` FLOAT(5) NOT NULL DEFAULT '1.0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
-    "musicsCorrelation": "CREATE TABLE ??.`musicsCorrelation` ( `id` INT NOT NULL AUTO_INCREMENT , `idTag` INT(3) NOT NULL , `idMusic` INT(6) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    "musicTag": "CREATE TABLE ??.?? ( `id` INT(3) NOT NULL AUTO_INCREMENT , `name` VARCHAR(25) NOT NULL , `emoji` VARCHAR(10) NOT NULL , `enable` BOOLEAN NOT NULL DEFAULT TRUE , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
+    "musicsList": "CREATE TABLE ??.?? ( `id` INT(6) NOT NULL AUTO_INCREMENT , `tagName` VARCHAR(12) NOT NULL , `volume` FLOAT(5) NOT NULL DEFAULT '1.0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;",
+    "musicsCorrelation": "CREATE TABLE ??.?? ( `id` INT NOT NULL AUTO_INCREMENT , `idTag` INT(3) NOT NULL , `idMusic` INT(6) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
 }
