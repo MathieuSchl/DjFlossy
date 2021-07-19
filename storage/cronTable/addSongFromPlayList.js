@@ -15,7 +15,7 @@ async function testChannelInfo(authorId) {
     }
 }
 
-async function sendMusicsInfo(bot, channel, tagName) {
+async function sendMusicsInfo(bot, channel, tagName, playlists) {
     const ytInfo = await ytdl.getInfo(tagName);
 
     const URL = ytInfo.videoDetails.video_url;
@@ -30,6 +30,43 @@ async function sendMusicsInfo(bot, channel, tagName) {
         .setTimestamp()
         .setFooter(bot.user.username, await bot.user.avatarURL());
 
+    await new Promise(async (resolve) => {
+        if (playlists == null || playlists.length === 0) {
+            resolve();
+            return;
+        }
+
+        let query = "SELECT `name` FROM ??";
+        let options = ["musicTag"];
+
+        for (let index = 0; index < playlists.length; index++) {
+            const element = playlists[index];
+            if (index === 0) query = query + " WHERE `id` = ?";
+            else query = query + " OR `id` = ?";
+            options.push(element);
+        }
+
+        const dbPrefix = await bot.basicFunctions.get("DbConfiguration").getDbPrefix(bot);
+        bot.dataBase.get("connection").exec(bot.db, query, options, async (error, results, fields) => {
+            if (error && error.code === "ER_NO_SUCH_TABLE") {
+                bot.dataBase.get("connection").createTable(dbPrefix, "musicTag");
+                resolve();
+                return;
+            } else if (error) throw error;
+            else if (results == null || results.length === 0) {
+                resolve();
+                return;
+            }
+            musicEmbed.setDescription("Musique ajouté dans les playlists:\n");
+            for (let index = 0; index < results.length; index++) {
+                const element = results[index];
+                musicEmbed.setDescription(musicEmbed.description + "-`" + element.name + "`\n");
+            }
+
+            resolve();
+            return;
+        });
+    })
     channel.send(musicEmbed)
 }
 
@@ -44,8 +81,8 @@ async function addSong(bot, musicTag, playlists) {
                 bot.dataBase.get("connection").exec(bot.db, 'SELECT `id` FROM ?? WHERE `tagName` = ?', ["musicsList", musicTag], async (error, results, fields) => {
                     if (error) throw error;
 
-                    const channel = await bot.channels.fetch(config.idNewSongsChannel);config
-                    sendMusicsInfo(bot, channel, musicTag)
+                    const channel = await bot.channels.fetch(config.idNewSongsChannel);
+                    sendMusicsInfo(bot, channel, musicTag, playlists)
 
                     const idMusic = results[0].id;
                     playlists.forEach(element => {
