@@ -26,15 +26,15 @@ async function getSong(bot, idSong, callback) {
 module.exports.run = async (bot, voiceChannel, connection) => {
     bot.musicFunctions.get("getNextSongId").run(bot, voiceChannel.guild.id, async (idSong) => {
         getSong(bot, idSong, async (error, results, fields) => {
+            if (error) throw error;
+
+            const songData = results[0];
+            if (songData == null) {
+                console.log(`The song with id "${idSong}" does not exist`);
+                return;
+            }
+
             try {
-                if (error) throw error;
-
-                const songData = results[0];
-                if (songData == null) {
-                    console.log(`The song with id "${idSong}" does not exist`);
-                    return;
-                }
-
                 const streamOptions = {
                     volume: songData.volume * 0.08
                 };
@@ -82,8 +82,15 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     }
                 })
             } catch (e) {
-                console.log("Error in startPlayingMusic");
-                console.log(e);
+                if (e.message === "This is a private video. Please sign in to verify that you may see it.") {
+                    if (!isString(idSong)) {
+                        console.log(e.message);
+                        console.log(idSong);
+                    }
+                } else if (!(e.message === "No video id found: " + songData.tagName)) {
+                    console.log("Error in startPlayingMusic");
+                    console.log(e);
+                }
                 bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
             }
         });
