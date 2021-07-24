@@ -54,18 +54,17 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                 });
 
                 dispatcher.on("error", (err) => {
+                    dispatcher.end();
+                    if (!err.code) {
+                        bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
+                        return;
+                    }
                     console.log("Error with the dispatcher");
                     console.log(err.code);
                     console.log("\n\n");
                     console.log(err);
-
-                    dispatcher.end();
-                    if (!err.code) {
-                        console.log("--------------");
-                        console.log(songData.tagName);
-                        bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
-                        return;
-                    }
+                    console.log("--------------");
+                    console.log(songData.tagName);
                     voiceChannel.leave();
                 });
 
