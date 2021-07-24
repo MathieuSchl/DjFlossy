@@ -89,7 +89,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     }
                 } else if (!(e.message === "No video id found: " + songData.tagName)) {
                     console.log("Error in startPlayingMusic");
-                    console.log(e);
+                    console.log(e.message);
                 }
                 bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
             }
