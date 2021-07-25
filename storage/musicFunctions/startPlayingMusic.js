@@ -96,6 +96,10 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                         console.log(e.message);
                         console.log(idSong);
                     }
+                } else if (e.message === "Video unavailable") {
+                    console.log("Error in startPlayingMusic");
+                    console.log(e.message);
+                    console.log(songData.tagName);
                 } else if (!(e.message === "No video id found: " + songData.tagName)) {
                     console.log("Error in startPlayingMusic");
                     console.log(e.message);
