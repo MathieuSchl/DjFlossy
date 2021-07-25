@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const dataTrophy = require('../dataTrophy.json');
 
 
 async function sendNotification(bot, idUser, trophyName, trophyDescription) {
@@ -16,48 +15,20 @@ async function sendNotification(bot, idUser, trophyName, trophyDescription) {
     user.send(trophyEmbed);
 }
 
-async function realoadConn(bot, connection, voiceChannel) {
-    if (connection.dispatcher) connection.dispatcher.end();
-    await connection.disconnect();
-    await bot.basicFunctions.get("wait").run(1000);
-    return await voiceChannel.join();
-}
-
 async function startListener(bot, connection) {
     if (!connection) return;
     bot.textToSpeech.get("listener").run(bot, connection, (voiceMessage, user) => {
-        const idUser =user.id;
         const words = voiceMessage.split(" ");
-        if (words.length !== 2) return;
-        if (words[1].toLowerCase() !== "chloé") return;
+        const cmds = Array.from(bot.musicFunctions.voiceCommands);
+        console.log(words);
 
-        bot.basicFunctions.get("dbDataSpecialGuild").select(bot, connection.channel.guild.id, async (error, results, fields) => {
-            if (error) throw error;
-            if (results.length === 0) return;
-
-            const guildResult = results[0];
-            guildResult.data.type = "chloe";
-
-            bot.basicFunctions.get("dbDataSpecialGuild").update(bot, guildResult, async (error, results, fields) => {
-                if (error) throw error;
-
-                const newConnection = await realoadConn(bot, connection, connection.channel);
-
-                bot.basicFunctions.get("dbUserAchievements").select(bot, idUser, (error, results, fields) => {
-                    if (error) throw error;
-                    const result = results[0];
-                    if (result.easterEgg_Chloe == null) {
-                        const title = dataTrophy.easterEgg_Chloe["fr"].title.replace('<BOTTAG>', bot.user.username);
-                        const description = dataTrophy.easterEgg_Chloe["fr"].description.replace('<BOTTAG>', bot.user.username);
-                        result.easterEgg_Chloe = bot.basicFunctions.get("getDateSqlFormat").run();
-                        sendNotification(bot, idUser, title, description);
-                        bot.basicFunctions.get("dbUserAchievements").update(bot,result,(error, results, fields)=>{
-                            if (error) throw error;
-                        })
-                    }
-                });
-            })
-        })
+        for (let index = 0; index < cmds.length; index++) {
+            const element = cmds[index];
+            if (element[1].test(words)) {
+                element[1].run(bot, connection, words, user);
+                return;
+            }
+        }
     })
 }
 

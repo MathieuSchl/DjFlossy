@@ -109,6 +109,17 @@ module.exports.run = async (bot) => {
         return;
     });
 
+    await fs.readdir(config.location + "/storage/musicFunctions", async (err, folders) => {
+        if (folders.length !== 0) {
+            for (let i = 0; i < folders.length; i++) {
+                if (await fs.lstatSync(config.location + "/storage/musicFunctions/" + folders[i]).isDirectory()) {
+                    await scanFolder(bot["musicFunctions"], config.location + "/storage/musicFunctions/" + folders[i] + "/");
+                }
+            }
+        }
+        return;
+    });
+
     return bot;
 };
 

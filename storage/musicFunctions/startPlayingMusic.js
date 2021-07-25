@@ -53,10 +53,19 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     //voiceChannel.leave();
                 });
 
-                dispatcher.on("error", (err) => {
+                dispatcher.on("error", async (err) => {
                     dispatcher.end();
                     if (!err.code) {
                         bot.musicFunctions.get("startPlayingMusic").run(bot, voiceChannel, connection);
+                        return;
+                    }
+                    if (err.code === "EPIPE") {
+                        console.log("c'est ca !");
+                        const vc = voiceChannel.guild.me.voice.channel;
+                        if (!vc) return;
+                        vc.leave();
+                        await bot.basicFunctions.get("wait").run(5000);
+                        vc.join();
                         return;
                     }
                     console.log("Error with the dispatcher");
@@ -65,6 +74,7 @@ module.exports.run = async (bot, voiceChannel, connection) => {
                     console.log(err);
                     console.log("--------------");
                     console.log(songData.tagName);
+
                     voiceChannel.leave();
                 });
 
