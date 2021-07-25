@@ -11,15 +11,6 @@ async function checkTheTypeOfTheGuild(bot, channel, callback) {
         const data = JSON.parse(result.data);
         const type = data.type;
         callback(type);
-        /*
-        if (acceptedTypes.includes(type)) callback();
-        else {
-            channel.send("C'est fonctionnalité n'est pas disponible pour le momment").then(async (msg) => {
-                await bot.basicFunctions.get("wait").run(10000)
-                if (msg.deletable) msg.delete();
-            })
-        }
-        */
     });
 }
 
@@ -40,33 +31,43 @@ async function start(bot, guildId, channelId, type) {
     }
 }
 
-module.exports.addReaction = async (bot, reaction, user, messageData, index) => {
-    reaction.users.remove(user.id);
-
-    checkTheTypeOfTheGuild(bot, reaction.message.channel, async (type) => {
-        const member = await reaction.message.guild.members.fetch(user.id);
-        const channel = member.voice.channel;
-        if (channel) {
-            const voiceState = channel.guild.me.voice;
+async function onMe(bot, channel, user) {
+    checkTheTypeOfTheGuild(bot, channel, async (type) => {
+        const member = await channel.guild.members.fetch(user.id);
+        const memberVcChannel = member.voice.channel;
+        if (memberVcChannel) {
+            const voiceState = memberVcChannel.guild.me.voice;
             if (voiceState.connection) {
                 const connection = voiceState.connection;
                 if (connection.dispatcher) connection.dispatcher.destroy();
                 connection.disconnect();
 
-                start(bot, reaction.message.guild.id, channel.id, type);
+                start(bot, memberVcChannel.guild.id, memberVcChannel.id, type);
             } else {
-                start(bot, reaction.message.guild.id, channel.id, type);
+                start(bot, memberVcChannel.guild.id, memberVcChannel.id, type);
             }
         } else {
-            reaction.message.channel.send("<@" + user.id + "> tu n'es pas dans un salon vocal.").then(async (msg) => {
-                await bot.basicFunctions.get("wait").run(5000);
-                if (msg.deletable) msg.delete();
-            })
+            if (["dm", "text"].includes(channel.type)) {
+                channel.send("<@" + user.id + "> tu n'es pas dans un salon vocal.").then(async (msg) => {
+                    await bot.basicFunctions.get("wait").run(5000);
+                    if (msg.deletable) msg.delete();
+                })
+            }
         }
     });
 }
 
+module.exports.addReaction = async (bot, reaction, user, messageData, index) => {
+    reaction.users.remove(user.id);
+
+    onMe(bot, reaction.message.channel, user);
+}
+
 module.exports.removeReaction = async (bot, reaction, user, messageData, index) => {}
+
+module.exports.onMe = async (bot, channel, user) => {
+    onMe(bot, channel, user);
+}
 
 module.exports.help = {
     name: "index"
