@@ -20,7 +20,6 @@ async function startListener(bot, connection) {
     bot.textToSpeech.get("listener").run(bot, connection, (voiceMessage, user) => {
         const words = voiceMessage.split(" ");
         const cmds = Array.from(bot.musicFunctions.voiceCommands);
-        console.log(words);
 
         for (let index = 0; index < cmds.length; index++) {
             const element = cmds[index];
