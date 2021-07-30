@@ -47,9 +47,13 @@ module.exports.run = async (bot) => {
                         if (connection.dispatcher) connection.dispatcher.destroy();
                     })
                 }).catch((err) => {
-                    console.log("Error in startBotMusicInGuilds");
-                    //console.log(err);
-                    console.log(err.code === "VOICE_CONNECTION_TIMEOUT");
+                    console.log("Error in startBotMusicInGuilds")
+                    if (err.code === "VOICE_CONNECTION_TIMEOUT") {
+                        console.log("VOICE_CONNECTION_TIMEOUT");
+                        console.log(err);
+                    } else {
+                        console.log(err);
+                    }
                 });
                 /*
                 bot.musicFunctions.get("createPlaylist").run(bot, element.id, () => {
