@@ -22,6 +22,25 @@ async function getAllGuilds(bot, callback) {
     });
 }
 
+async function joinVC(bot, voiceChannel) {
+    voiceChannel.join().then((connection) => {
+        connection.on("disconnect", () => {
+            if (connection.dispatcher) connection.dispatcher.destroy();
+        })
+    }).catch(async (err) => {
+        console.log("Error in startBotMusicInGuilds")
+        if (err.code === "VOICE_CONNECTION_TIMEOUT") {
+            console.log(new Date());
+            console.log("VOICE_CONNECTION_TIMEOUT " + voiceChannel.guild.name + "\n");
+            voiceChannel.leave();
+            await bot.basicFunctions.get("wait").run(3000);
+            joinVC(bot, voiceChannel);
+        } else {
+            console.log(err);
+        }
+    });
+}
+
 module.exports.run = async (bot) => {
     resetAllPlaylist(bot, (error, results, fields) => {
         if (error) throw error;
@@ -42,24 +61,7 @@ module.exports.run = async (bot) => {
                     return;
                 };
 
-                voiceChannel.join().then((connection) => {
-                    connection.on("disconnect", () => {
-                        if (connection.dispatcher) connection.dispatcher.destroy();
-                    })
-                }).catch((err) => {
-                    console.log("Error in startBotMusicInGuilds")
-                    if (err.code === "VOICE_CONNECTION_TIMEOUT") {
-                        console.log("VOICE_CONNECTION_TIMEOUT");
-                        console.log(err);
-                    } else {
-                        console.log(err);
-                    }
-                });
-                /*
-                bot.musicFunctions.get("createPlaylist").run(bot, element.id, () => {
-                    bot.musicFunctions.get("joinVoiceChannel").run(bot, element.data.musicChannel);
-                });
-                */
+                joinVC(bot, voiceChannel);
                 await bot.basicFunctions.get("wait").run(500);
             }
         });
